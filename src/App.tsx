@@ -8,9 +8,7 @@ import { ScientificWorks } from './components/ScientificWorks'
 import { PointSummary } from './components/PointSummary'
 import { FormExport } from './components/FormExport'
 import { Mau01Form } from './components/Mau01Form'
-import { Mau01Preview } from './components/Mau01Preview'
 import { Login } from './components/Login'
-import { Dashboard } from './components/Dashboard'
 import { generateDocx } from './utils/wordGenerator'
 import { calculateTotalScores } from './utils/calculator'
 import type { ScientificWork } from './utils/calculator'
@@ -18,13 +16,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import './index.css'
 
 function MainApp() {
-  const { currentUser, logout, updateUserPassword } = useAuth();
+  const { currentUser, logout } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activeFormId, setActiveFormId] = useState<string | null>(null);
   
   const [candidateData, setCandidateData] = useState<CandidateData>({
     fullName: '',
-    birthDate: '',
+    birthYear: '',
     targetLevel: 'PGS',
     field: 'NATURAL_SCIENCES',
     specialty: '',
@@ -33,66 +30,56 @@ function MainApp() {
   const [works, setWorks] = useState<ScientificWork[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'saving' | 'saved' | 'error'>('saved');
-  const [activeTab, setActiveTab] = useState<'ESTIMATOR' | 'MAU01' | 'PREVIEW'>('ESTIMATOR');
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
+  const [activeTab, setActiveTab] = useState<'ESTIMATOR' | 'MAU01'>('ESTIMATOR');
 
-  // Load data from Firestore when user selects a form
+  // Load data from Firestore when user logs in
   useEffect(() => {
-    if (!currentUser || !activeFormId) return;
-
-    const loadData = async () => {
-      try {
-        const docRef = doc(db, `users/${currentUser.uid}/forms`, activeFormId);
-        const docSnap = await getDoc(docRef);
+    const fetchData = async () => {
+      if (currentUser) {
+        try {
+          const docRef = doc(db, 'users', currentUser.uid);
+          const docSnap = await getDoc(docRef);
           
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.candidateData) setCandidateData(data.candidateData);
-          if (data.works) setWorks(data.works);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.candidateData) setCandidateData(data.candidateData);
+            if (data.works) setWorks(data.works);
+          }
+        } catch (error) {
+          console.error("Lỗi khi tải dữ liệu từ Cloud:", error);
+        } finally {
+          setIsLoaded(true);
         }
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu từ Cloud:", error);
-      } finally {
-        setIsLoaded(true);
+      } else {
+        setIsLoaded(false);
+      }
+    };
+    fetchData();
+  }, [currentUser]);
+
+  // Auto-save data to Firestore when it changes
+  useEffect(() => {
+    const saveData = async () => {
+      if (currentUser && isLoaded) {
+        setSaveStatus('saving');
+        try {
+          const docRef = doc(db, 'users', currentUser.uid);
+          await setDoc(docRef, { candidateData, works });
+          setSaveStatus('saved');
+        } catch (error) {
+          console.error("Lỗi khi đồng bộ lên Cloud:", error);
+          setSaveStatus('error');
+        }
       }
     };
 
-    loadData();
-  }, [currentUser, activeFormId]);
-
-  // Auto-save to Firestore (debounce 1s)
-  useEffect(() => {
-    if (!isLoaded || !currentUser || !activeFormId) return;
-    
-    setSaveStatus('saving');
-    const timer = setTimeout(async () => {
-      try {
-        await setDoc(doc(db, `users/${currentUser.uid}/forms`, activeFormId), {
-          candidateData,
-          works
-        }, { merge: true });
-        setSaveStatus('saved');
-      } catch (error) {
-        console.error("Lỗi khi đồng bộ lên Cloud:", error);
-        setSaveStatus('error');
-      }
+    // Debounce save (wait 1s after last change before saving to avoid spamming the DB)
+    const timeoutId = setTimeout(() => {
+      saveData();
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [candidateData, works, currentUser, isLoaded, activeFormId]);
-
-  // Protect against closing window while saving
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (saveStatus === 'saving') {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [saveStatus]);
+    return () => clearTimeout(timeoutId);
+  }, [candidateData, works, currentUser, isLoaded]);
 
   const summary = useMemo(() => calculateTotalScores(works), [works]);
   
@@ -107,7 +94,7 @@ function MainApp() {
     downloadAnchorNode.setAttribute("href", dataStr);
     const fileName = candidateData.fullName ? `BanNhap_GSPGS_${candidateData.fullName.replace(/\s+/g, '')}.json` : "BanNhap_GSPGS.json";
     downloadAnchorNode.setAttribute("download", fileName);
-    document.body.appendChild(downloadAnchorNode);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
@@ -123,7 +110,7 @@ function MainApp() {
         const parsed = JSON.parse(content);
         if (parsed.candidateData) setCandidateData(parsed.candidateData);
         if (parsed.works) setWorks(parsed.works);
-        alert('Đã tải dữ liệu thành công!');
+        alert('Đã tải dữ liệu thành công! (Dữ liệu sẽ được tự động đồng bộ lên Đám mây)');
       } catch (error) {
         alert('File không hợp lệ hoặc bị lỗi!');
         console.error(error);
@@ -147,67 +134,19 @@ function MainApp() {
     );
   }
 
-  const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) {
-      alert('Mật khẩu mới phải có ít nhất 6 ký tự.');
-      return;
-    }
-    try {
-      await updateUserPassword(newPassword);
-      alert('Đổi mật khẩu thành công!');
-      setIsChangingPassword(false);
-      setNewPassword('');
-    } catch (error: any) {
-      alert('Lỗi khi đổi mật khẩu: ' + error.message + '\nNếu bạn vừa đăng nhập từ lâu, Firebase yêu cầu bạn đăng xuất và đăng nhập lại trước khi đổi mật khẩu.');
-    }
-  };
-
-  if (!activeFormId) {
-    return (
-      <div className="container">
-        <header className="d-flex justify-content-between align-items-center" style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.8)', borderRadius: '12px' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--primary)' }}>Hệ thống Quản lý Hồ sơ Ứng viên</h1>
-            <p style={{ margin: 0, color: 'var(--text-muted)' }}>{currentUser?.email}</p>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <button className="btn btn-outline" onClick={() => setIsChangingPassword(true)}>Đổi mật khẩu</button>
-            <button className="btn btn-outline" onClick={logout}>Đăng xuất</button>
-          </div>
-        </header>
-
-        {isChangingPassword && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-            <div className="glass-panel" style={{ padding: '2rem', width: '400px' }}>
-              <h3 style={{ marginTop: 0 }}>Đổi mật khẩu</h3>
-              <div className="form-group">
-                <label className="form-label">Mật khẩu mới</label>
-                <input type="password" placeholder="Tối thiểu 6 ký tự" className="form-control" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-              </div>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                <button className="btn btn-primary" onClick={handleChangePassword}>Cập nhật</button>
-                <button className="btn btn-outline" onClick={() => setIsChangingPassword(false)}>Hủy</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <Dashboard onSelectForm={setActiveFormId} />
-      </div>
-    );
-  }
-
   return (
     <div className="container">
       <header className="no-print" style={{ textAlign: 'center', marginBottom: '3rem', paddingTop: '2rem', position: 'relative' }}>
         <div style={{ position: 'absolute', right: 0, top: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button className="btn btn-outline" style={{ padding: '0.25rem 0.75rem' }} onClick={() => setActiveFormId(null)}>← Trở về</button>
           <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
             Tài khoản: <strong>{currentUser.email}</strong>
             <div style={{ fontSize: '0.75rem', color: saveStatus === 'saving' ? 'var(--primary)' : saveStatus === 'error' ? 'var(--danger)' : 'var(--success)' }}>
               {saveStatus === 'saving' ? 'Đang đồng bộ...' : saveStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ lên Đám mây'}
             </div>
           </span>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }} onClick={logout}>
+            Đăng xuất
+          </button>
         </div>
         
         <h1 style={{ color: 'var(--primary)', fontSize: '2.5rem', marginBottom: '0.5rem' }}>GS/PGS Point Estimator</h1>
@@ -246,13 +185,6 @@ function MainApp() {
             >
               2. Hoàn thiện Mẫu 01
             </button>
-            <button 
-              className={`btn ${activeTab === 'PREVIEW' ? 'btn-primary' : ''}`} 
-              style={{ background: activeTab === 'PREVIEW' ? 'var(--primary)' : 'transparent', color: activeTab === 'PREVIEW' ? 'white' : 'var(--text-main)', border: 'none', boxShadow: activeTab === 'PREVIEW' ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none' }}
-              onClick={() => setActiveTab('PREVIEW')}
-            >
-              3. Xem trước & Xuất File
-            </button>
           </div>
         </div>
       </header>
@@ -278,19 +210,7 @@ function MainApp() {
 
           {activeTab === 'MAU01' && (
             <div className="no-print">
-              <Mau01Form data={candidateData} onChange={setCandidateData} onExportWord={() => setActiveTab('PREVIEW')} />
-            </div>
-          )}
-
-          {activeTab === 'PREVIEW' && (
-            <div className="no-print">
-              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <button className="btn btn-primary" onClick={() => generateDocx(candidateData, works, summary)} style={{ fontSize: '1.2rem', padding: '1rem 3rem' }}>
-                  📄 Tải xuống File Word (.docx) Chính thức
-                </button>
-                <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Hãy đọc lại thật kỹ bản Xem trước bên dưới trước khi in nhé!</p>
-              </div>
-              <Mau01Preview data={candidateData} works={works} summary={summary} />
+              <Mau01Form data={candidateData} onChange={setCandidateData} onExportWord={() => generateDocx(candidateData, works, summary)} />
             </div>
           )}
 

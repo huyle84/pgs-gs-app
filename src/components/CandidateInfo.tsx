@@ -1,6 +1,6 @@
 export interface CandidateData {
   fullName: string;
-  birthDate: string;
+  birthYear: string;
   targetLevel: 'GS' | 'PGS';
   field: 'NATURAL_SCIENCES' | 'SOCIAL_SCIENCES';
   specialty: string;
@@ -26,15 +26,6 @@ export interface CandidateData {
   researchDirections?: string;
   foreignLanguage?: string;
   englishCertificate?: string;
-  
-  isLecturer?: boolean;
-  isVisitingLecturer?: boolean;
-  isPartyMember?: boolean;
-  
-  workHistories?: { fromYear: string; toYear: string; position: string; workplace: string }[];
-  supervisions?: { name: string; type: 'NCS' | 'ThS'; role: 'Chính' | 'Phụ'; period: string; institution: string; graduationYear: string }[];
-  projects?: { name: string; role: string; codeAndLevel: string; executionTime: string; acceptanceDate: string }[];
-  teachingHours?: { year: string; phdHours: string; masterHours: string; bachelorHours: string; totalHours: string }[];
 }
 
 interface Props {
@@ -65,14 +56,15 @@ export const CandidateInfo: React.FC<Props> = ({ data, onChange }) => {
           />
         </div>
         <div className="form-group" style={{ flex: 1 }}>
-          <label className="form-label" htmlFor="birthDate">Ngày tháng năm sinh</label>
+          <label className="form-label" htmlFor="birthYear">Năm sinh</label>
           <input
-            type="date"
-            id="birthDate"
-            name="birthDate"
+            type="number"
+            id="birthYear"
+            name="birthYear"
             className="form-control"
-            value={data.birthDate}
+            value={data.birthYear}
             onChange={handleChange}
+            placeholder="Ví dụ: 1980"
           />
         </div>
       </div>
