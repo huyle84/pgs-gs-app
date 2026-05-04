@@ -11,6 +11,15 @@ export interface ScientificWork {
   isInternationalPublisher?: boolean; // Sách xb bởi NXB uy tín quốc tế
   isExceptionalArticle?: boolean; // Bài báo ISI có IF vượt trội
   stage: 'BEFORE' | 'AFTER'; // Trước hay sau khi bảo vệ TS / đạt chuẩn PGS
+  
+  // Chi tiết bài báo / kỷ yếu
+  journalName?: string;
+  impactFactor?: string;
+  citations?: string;
+  volume?: string;
+  pages?: string;
+  publishYear?: string;
+  conferenceRank?: string;
 }
 
 export interface ScoreSummary {

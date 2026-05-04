@@ -16,10 +16,16 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
     isMainAuthor: true,
     totalAuthors: 1,
     baseScore: 1.0,
-    isRecent: true,
     isInternationalPublisher: false,
     isExceptionalArticle: false,
     stage: 'AFTER',
+    journalName: '',
+    impactFactor: '',
+    citations: '',
+    volume: '',
+    pages: '',
+    publishYear: '',
+    conferenceRank: '',
   };
   
   const [newWork, setNewWork] = useState<Partial<ScientificWork>>(initialNewWorkState);
@@ -41,6 +47,13 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
       isInternationalPublisher: newWork.isInternationalPublisher,
       isExceptionalArticle: newWork.isExceptionalArticle,
       stage: newWork.stage!,
+      journalName: newWork.journalName,
+      impactFactor: newWork.impactFactor,
+      citations: newWork.citations,
+      volume: newWork.volume,
+      pages: newWork.pages,
+      publishYear: newWork.publishYear,
+      conferenceRank: newWork.conferenceRank,
     };
 
     if (editingId) {
@@ -254,15 +267,52 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
           </div>
         </div>
 
+        {['articleISI', 'articleISSNOnline', 'articleISSNOffline', 'nationalConference', 'internationalConference'].includes(newWork.type!) && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <label className="form-label">{newWork.type?.includes('Conference') ? 'Tên Kỷ yếu hội nghị' : 'Tên Tạp chí khoa học'}</label>
+              <input type="text" className="form-control" value={newWork.journalName || ''} onChange={e => setNewWork({ ...newWork, journalName: e.target.value })} placeholder="Tên tạp chí/kỷ yếu..." />
+            </div>
+            {!newWork.type?.includes('Conference') && (
+              <div className="form-group">
+                <label className="form-label">Chỉ số IF (nếu có)</label>
+                <input type="text" className="form-control" value={newWork.impactFactor || ''} onChange={e => setNewWork({ ...newWork, impactFactor: e.target.value })} placeholder="Ví dụ: 1.5" />
+              </div>
+            )}
+            {newWork.type?.includes('Conference') && (
+              <div className="form-group">
+                <label className="form-label">Hạng (Rank) Hội nghị</label>
+                <input type="text" className="form-control" value={newWork.conferenceRank || ''} onChange={e => setNewWork({ ...newWork, conferenceRank: e.target.value })} placeholder="A, B, C..." />
+              </div>
+            )}
+            <div className="form-group">
+              <label className="form-label">Số trích dẫn</label>
+              <input type="number" className="form-control" value={newWork.citations || ''} onChange={e => setNewWork({ ...newWork, citations: e.target.value })} placeholder="Số lần trích dẫn" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Năm công bố</label>
+              <input type="text" className="form-control" value={newWork.publishYear || ''} onChange={e => setNewWork({ ...newWork, publishYear: e.target.value })} placeholder="Ví dụ: 2023" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tập / Số phát hành</label>
+              <input type="text" className="form-control" value={newWork.volume || ''} onChange={e => setNewWork({ ...newWork, volume: e.target.value })} placeholder="Tập 1, Số 2..." />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Trang (Pages)</label>
+              <input type="text" className="form-control" value={newWork.pages || ''} onChange={e => setNewWork({ ...newWork, pages: e.target.value })} placeholder="Ví dụ: 15-25" />
+            </div>
+          </div>
+        )}
+
         {(newWork.type === 'articleISI') && (
-          <div className="form-group">
+          <div style={{ marginTop: '1rem' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
               <input 
                 type="checkbox" 
-                checked={newWork.isExceptionalArticle} 
-                onChange={e => setNewWork({ ...newWork, isExceptionalArticle: e.target.checked })} 
+                checked={newWork.isExceptionalArticle || false}
+                onChange={e => setNewWork({ ...newWork, isExceptionalArticle: e.target.checked })}
               />
-              Tạp chí có hệ số ảnh hưởng (IF) vượt trội (+50% điểm)
+              <span>Bài báo trên tạp chí uy tín quốc tế có IF vượt trội (được cộng 50% điểm)</span>
             </label>
           </div>
         )}

@@ -8,6 +8,7 @@ import { ScientificWorks } from './components/ScientificWorks'
 import { PointSummary } from './components/PointSummary'
 import { FormExport } from './components/FormExport'
 import { Mau01Form } from './components/Mau01Form'
+import { Mau01Preview } from './components/Mau01Preview'
 import { Login } from './components/Login'
 import { generateDocx } from './utils/wordGenerator'
 import { calculateTotalScores } from './utils/calculator'
@@ -21,7 +22,7 @@ function MainApp() {
   
   const [candidateData, setCandidateData] = useState<CandidateData>({
     fullName: '',
-    birthYear: '',
+    birthDate: '',
     targetLevel: 'PGS',
     field: 'NATURAL_SCIENCES',
     specialty: '',
@@ -31,6 +32,7 @@ function MainApp() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'saving' | 'saved' | 'error'>('saved');
   const [activeTab, setActiveTab] = useState<'ESTIMATOR' | 'MAU01'>('ESTIMATOR');
+  const [showPreview, setShowPreview] = useState(false);
 
   // Load data from Firestore when user logs in
   useEffect(() => {
@@ -210,8 +212,23 @@ function MainApp() {
 
           {activeTab === 'MAU01' && (
             <div className="no-print">
-              <Mau01Form data={candidateData} onChange={setCandidateData} onExportWord={() => generateDocx(candidateData, works, summary)} />
+              <Mau01Form 
+                data={candidateData} 
+                onChange={setCandidateData} 
+                onPreview={() => setShowPreview(true)}
+                onExportWord={() => generateDocx(candidateData, works, summary)} 
+              />
             </div>
+          )}
+
+          {showPreview && (
+            <Mau01Preview 
+              data={candidateData}
+              works={works}
+              summary={summary}
+              onClose={() => setShowPreview(false)}
+              onExportWord={() => generateDocx(candidateData, works, summary)}
+            />
           )}
 
           <div style={{ display: 'none' }}>

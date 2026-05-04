@@ -1,6 +1,6 @@
 export interface CandidateData {
   fullName: string;
-  birthYear: string;
+  birthDate: string;
   targetLevel: 'GS' | 'PGS';
   field: 'NATURAL_SCIENCES' | 'SOCIAL_SCIENCES';
   specialty: string;
@@ -56,15 +56,12 @@ export const CandidateInfo: React.FC<Props> = ({ data, onChange }) => {
           />
         </div>
         <div className="form-group" style={{ flex: 1 }}>
-          <label className="form-label" htmlFor="birthYear">Năm sinh</label>
+          <label className="form-label">Ngày sinh</label>
           <input
-            type="number"
-            id="birthYear"
-            name="birthYear"
+            type="date"
             className="form-control"
-            value={data.birthYear}
-            onChange={handleChange}
-            placeholder="Ví dụ: 1980"
+            value={data.birthDate}
+            onChange={e => onChange({ ...data, birthDate: e.target.value })}
           />
         </div>
       </div>

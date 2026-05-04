@@ -5,9 +5,10 @@ interface Props {
   data: CandidateData;
   onChange: (data: CandidateData) => void;
   onExportWord: () => void;
+  onPreview: () => void;
 }
 
-export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord }) => {
+export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPreview }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     onChange({ ...data, [name]: value });
@@ -17,9 +18,14 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord }) => 
     <div className="glass-panel" style={{ marginTop: '2rem' }}>
       <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '2rem' }}>
         <h2>Thông tin Chi tiết (Mẫu số 01)</h2>
-        <button className="btn btn-primary" onClick={onExportWord}>
-          📄 Tải xuống File Word (.docx)
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn btn-outline" onClick={onPreview}>
+            👁️ Xem trước
+          </button>
+          <button className="btn btn-primary" onClick={onExportWord}>
+            📄 Tải xuống File Word (.docx)
+          </button>
+        </div>
       </div>
 
       <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
@@ -117,7 +123,10 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord }) => 
         </div>
       </div>
       
-      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+      <div style={{ marginTop: '2rem', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+        <button className="btn btn-outline" style={{ padding: '1rem 2rem', fontSize: '1.2rem' }} onClick={onPreview}>
+          👁️ Xem trước tờ khai
+        </button>
         <button className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem' }} onClick={onExportWord}>
           📄 Xuất Mẫu số 01 (File Word)
         </button>
