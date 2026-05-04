@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ScientificWork } from '../utils/calculator';
+import { useState } from 'react';
+import type { ScientificWork } from '../utils/calculator';
 import { config } from '../config/scoringRules';
 
 interface Props {

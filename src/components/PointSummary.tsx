@@ -1,7 +1,7 @@
-import React from 'react';
-import { ScoreSummary, checkEligibility } from '../utils/calculator';
+import { checkEligibility } from '../utils/calculator';
+import type { ScoreSummary } from '../utils/calculator';
 import { config } from '../config/scoringRules';
-import { CandidateData } from './CandidateInfo';
+import type { CandidateData } from './CandidateInfo';
 
 interface Props {
   summary: ScoreSummary;

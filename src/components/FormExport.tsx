@@ -1,6 +1,5 @@
-import React from 'react';
-import { CandidateData } from './CandidateInfo';
-import { ScientificWork, ScoreSummary } from '../utils/calculator';
+import type { CandidateData } from './CandidateInfo';
+import type { ScientificWork, ScoreSummary } from '../utils/calculator';
 import { config } from '../config/scoringRules';
 
 interface Props {

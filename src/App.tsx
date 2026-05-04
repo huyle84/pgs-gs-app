@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react'
-import { CandidateInfo, CandidateData } from './components/CandidateInfo'
+import { useState, useMemo } from 'react'
+import { CandidateInfo } from './components/CandidateInfo'
+import type { CandidateData } from './components/CandidateInfo'
 import { ScientificWorks } from './components/ScientificWorks'
 import { PointSummary } from './components/PointSummary'
 import { FormExport } from './components/FormExport'
-import { ScientificWork, calculateTotalScores } from './utils/calculator'
+import { calculateTotalScores } from './utils/calculator'
+import type { ScientificWork } from './utils/calculator'
 import './index.css'
 
 function App() {
