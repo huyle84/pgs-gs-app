@@ -8,7 +8,9 @@ interface Props {
 }
 
 export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
-  const [newWork, setNewWork] = useState<Partial<ScientificWork>>({
+  const [editingId, setEditingId] = useState<string | null>(null);
+  
+  const initialNewWorkState: Partial<ScientificWork> = {
     type: 'articleISI',
     title: '',
     isMainAuthor: true,
@@ -17,15 +19,18 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
     isRecent: true,
     isInternationalPublisher: false,
     isExceptionalArticle: false,
-  });
+  };
+  
+  const [newWork, setNewWork] = useState<Partial<ScientificWork>>(initialNewWorkState);
 
-  const handleAdd = () => {
+  const handleAddOrUpdate = () => {
     if (!newWork.title) {
       alert('Vui lòng nhập tên công trình');
       return;
     }
+    
     const work: ScientificWork = {
-      id: Date.now().toString(),
+      id: editingId || Date.now().toString(),
       type: newWork.type as keyof typeof config.maxPoints,
       title: newWork.title!,
       isMainAuthor: newWork.isMainAuthor!,
@@ -35,12 +40,41 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
       isInternationalPublisher: newWork.isInternationalPublisher,
       isExceptionalArticle: newWork.isExceptionalArticle,
     };
-    onChange([...works, work]);
-    setNewWork({ ...newWork, title: '' }); // reset title
+
+    if (editingId) {
+      // Cập nhật
+      onChange(works.map(w => w.id === editingId ? work : w));
+      setEditingId(null);
+    } else {
+      // Thêm mới
+      onChange([...works, work]);
+    }
+    setNewWork(initialNewWorkState);
+  };
+
+  const handleEdit = (work: ScientificWork) => {
+    setEditingId(work.id);
+    setNewWork({ ...work });
+    
+    // Scroll mượt xuống form chỉnh sửa
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setNewWork(initialNewWorkState);
   };
 
   const handleRemove = (id: string) => {
-    onChange(works.filter(w => w.id !== id));
+    if (window.confirm('Bạn có chắc chắn muốn xóa công trình này?')) {
+      onChange(works.filter(w => w.id !== id));
+      if (editingId === id) {
+        handleCancelEdit();
+      }
+    }
   };
 
   const getTypeName = (type: string) => {
@@ -80,12 +114,12 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
                 <th>Điểm gốc</th>
                 <th>3 năm cuối</th>
                 <th>Tùy chọn</th>
-                <th>Hành động</th>
+                <th style={{ width: '150px' }}>Hành động</th>
               </tr>
             </thead>
             <tbody>
               {works.map(work => (
-                <tr key={work.id}>
+                <tr key={work.id} style={{ background: editingId === work.id ? 'rgba(245, 158, 11, 0.1)' : 'transparent' }}>
                   <td>{work.title}</td>
                   <td>{getTypeName(work.type)}</td>
                   <td>
@@ -98,7 +132,23 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
                     {work.isInternationalPublisher && <span style={{ fontSize: '0.8rem', color: 'var(--success)' }}>[NXB Quốc tế +25%]</span>}
                   </td>
                   <td>
-                    <button className="btn btn-danger" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => handleRemove(work.id)}>Xóa</button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button 
+                        className="btn btn-outline" 
+                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', flex: 1 }} 
+                        onClick={() => handleEdit(work)}
+                        disabled={editingId === work.id}
+                      >
+                        Sửa
+                      </button>
+                      <button 
+                        className="btn btn-danger" 
+                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', flex: 1 }} 
+                        onClick={() => handleRemove(work.id)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -107,8 +157,16 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
         </div>
       )}
 
-      <div style={{ background: 'rgba(0,0,0,0.02)', padding: '1.5rem', borderRadius: '8px', border: '1px dashed #ccc' }}>
-        <h4 style={{ marginBottom: '1rem' }}>Thêm công trình mới</h4>
+      <div style={{ 
+        background: editingId ? 'rgba(245, 158, 11, 0.05)' : 'rgba(0,0,0,0.02)', 
+        padding: '1.5rem', 
+        borderRadius: '8px', 
+        border: editingId ? '1px dashed #F59E0B' : '1px dashed #ccc',
+        marginTop: '2rem'
+      }}>
+        <h4 style={{ marginBottom: '1rem', color: editingId ? '#D97706' : 'var(--text-main)' }}>
+          {editingId ? 'Chỉnh sửa công trình' : 'Thêm công trình mới'}
+        </h4>
         
         <div className="form-group">
           <label className="form-label">Tên công trình (Bài báo/Sách/Bằng sáng chế...)</label>
@@ -117,6 +175,7 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
             className="form-control"
             value={newWork.title}
             onChange={e => setNewWork({ ...newWork, title: e.target.value })}
+            placeholder="Nhập tên bài báo / sách"
           />
         </div>
 
@@ -206,9 +265,21 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
           </div>
         )}
 
-        <button className="btn btn-primary" onClick={handleAdd}>
-          Thêm công trình
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+          <button 
+            className="btn btn-primary" 
+            style={{ background: editingId ? '#D97706' : 'var(--primary)' }} 
+            onClick={handleAddOrUpdate}
+          >
+            {editingId ? '✓ Lưu Cập nhật' : '+ Thêm công trình'}
+          </button>
+          
+          {editingId && (
+            <button className="btn btn-outline" onClick={handleCancelEdit}>
+              Hủy
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
