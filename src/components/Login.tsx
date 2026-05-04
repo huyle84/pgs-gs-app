@@ -32,6 +32,9 @@ export const Login = () => {
       else if (err.code === 'auth/weak-password') msg = 'Mật khẩu quá yếu (cần ít nhất 6 ký tự).';
       else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') 
         msg = 'Email hoặc mật khẩu không chính xác.';
+      else if (err.code === 'auth/operation-not-allowed') 
+        msg = 'Bạn chưa bật tính năng Đăng nhập Email/Password trên Firebase Console.';
+      else msg = `Lỗi hệ thống (${err.code}): ${err.message}`;
       
       setError(msg);
     } finally {
