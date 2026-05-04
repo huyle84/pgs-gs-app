@@ -351,12 +351,157 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
         </div>
       </div>
 
-      {/* Guidance Section */}
-      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>4. Hướng dẫn thành công NCS & Học viên</h3>
+      {/* ========== 4. Guidance Table ========== */}
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS</h3>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>(đã được cấp bằng/có quyết định cấp bằng). <em>Ghi chú: Ứng viên chức danh GS chỉ kê khai số lượng NCS.</em></p>
       <div style={{ marginBottom: '2rem' }}>
-        <div className="form-group">
-          <label className="form-label">Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng)</label>
-          <textarea name="guidanceDetails" className="form-control" rows={4} value={data.guidanceDetails || ''} onChange={handleChange} placeholder="Liệt kê tên NCS/học viên, đề tài, năm bảo vệ..." />
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
+          <button className="btn btn-primary" type="button" style={{ fontSize: '0.9rem' }} onClick={() => {
+            const recs = data.guidanceRecords || [];
+            onChange({ ...data, guidanceRecords: [...recs, { id: Date.now().toString(), name: '', objectType: 'NCS', roleMain: true, roleSub: false, periodFrom: '', periodTo: '', institution: '', graduationYear: '' }] });
+          }}>+ Thêm NCS/HV</button>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <thead>
+              <tr>
+                <th style={formThStyle}>TT</th>
+                <th style={formThStyle}>Họ tên NCS hoặc HV</th>
+                <th style={formThStyle}>Đối tượng</th>
+                <th style={formThStyle}>Trách nhiệm HD</th>
+                <th style={formThStyle}>Từ năm</th>
+                <th style={formThStyle}>Đến năm</th>
+                <th style={formThStyle}>Cơ sở đào tạo</th>
+                <th style={formThStyle}>Năm cấp bằng</th>
+                <th style={formThStyle}>Xóa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(data.guidanceRecords || []).map((rec, idx) => (
+                <tr key={rec.id}>
+                  <td style={formTdStyle}>{idx + 1}</td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '120px' }} value={rec.name} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], name: e.target.value }; onChange({ ...data, guidanceRecords: recs }); }} /></td>
+                  <td style={formTdStyle}>
+                    <select className="form-control" style={{ ...tableCellInput, minWidth: '70px' }} value={rec.objectType} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], objectType: e.target.value as 'NCS' | 'HV' }; onChange({ ...data, guidanceRecords: recs }); }}>
+                      <option value="NCS">NCS</option>
+                      <option value="HV">HV</option>
+                    </select>
+                  </td>
+                  <td style={formTdStyle}>
+                    <select className="form-control" style={{ ...tableCellInput, minWidth: '80px' }} value={rec.roleMain ? 'Chính' : 'Phụ'} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], roleMain: e.target.value === 'Chính', roleSub: e.target.value === 'Phụ' }; onChange({ ...data, guidanceRecords: recs }); }}>
+                      <option value="Chính">Chính</option>
+                      <option value="Phụ">Phụ</option>
+                    </select>
+                  </td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={tableCellInput} value={rec.periodFrom} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], periodFrom: e.target.value }; onChange({ ...data, guidanceRecords: recs }); }} placeholder="2019" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={tableCellInput} value={rec.periodTo} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], periodTo: e.target.value }; onChange({ ...data, guidanceRecords: recs }); }} placeholder="2023" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.institution} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], institution: e.target.value }; onChange({ ...data, guidanceRecords: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={tableCellInput} value={rec.graduationYear} onChange={e => { const recs = [...(data.guidanceRecords || [])]; recs[idx] = { ...recs[idx], graduationYear: e.target.value }; onChange({ ...data, guidanceRecords: recs }); }} placeholder="2023" /></td>
+                  <td style={formTdStyle}><button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => { const recs = (data.guidanceRecords || []).filter((_, i) => i !== idx); onChange({ ...data, guidanceRecords: recs }); }}>✕</button></td>
+                </tr>
+              ))}
+              {(!data.guidanceRecords || data.guidanceRecords.length === 0) && (
+                <tr><td colSpan={9} style={{ ...formTdStyle, textAlign: 'center', color: '#999' }}>Bấm "+ Thêm NCS/HV" để bắt đầu nhập liệu</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ========== 5. Books ========== */}
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>5. Biên soạn sách phục vụ đào tạo đại học và sau đại học</h3>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+        (Tách thành 2 giai đoạn: Đối với PGS: Trước/Sau khi bảo vệ học vị TS; Đối với GS: Trước/Sau khi được công nhận chức danh PGS)
+      </p>
+      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+        <strong>Chữ viết tắt:</strong> CK: sách chuyên khảo; GT: sách giáo trình; TK: sách tham khảo; HD: sách hướng dẫn; MM: viết một mình; CB: chủ biên; phản ứng viên biên soạn đánh dấu từ trang... đến trang... (ví dụ: 17-56; 145-329).
+      </p>
+
+      {/* Books BEFORE */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <label className="form-label" style={{ margin: 0, fontWeight: 'bold', fontStyle: 'italic' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</label>
+          <button className="btn btn-primary" type="button" style={{ fontSize: '0.9rem' }} onClick={() => {
+            const recs = data.booksBefore || [];
+            onChange({ ...data, booksBefore: [...recs, { id: Date.now().toString(), title: '', bookType: '', publisher: '', totalAuthors: '', writingRole: '', confirmation: '' }] });
+          }}>+ Thêm sách</button>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <thead>
+              <tr>
+                <th style={formThStyle}>TT</th>
+                <th style={formThStyle}>Tên sách</th>
+                <th style={formThStyle}>Loại sách (CK, GT, TK, HD)</th>
+                <th style={formThStyle}>NXB và năm XB</th>
+                <th style={formThStyle}>Số tác giả</th>
+                <th style={formThStyle}>Viết MM hoặc CB, phản biện soạn</th>
+                <th style={formThStyle}>Xác nhận CS GDĐH</th>
+                <th style={formThStyle}>Xóa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(data.booksBefore || []).map((rec, idx) => (
+                <tr key={rec.id}>
+                  <td style={formTdStyle}>{idx + 1}</td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '140px' }} value={rec.title} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], title: e.target.value }; onChange({ ...data, booksBefore: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '60px' }} value={rec.bookType} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], bookType: e.target.value }; onChange({ ...data, booksBefore: recs }); }} placeholder="GT" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.publisher} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], publisher: e.target.value }; onChange({ ...data, booksBefore: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={tableCellInput} value={rec.totalAuthors} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], totalAuthors: e.target.value }; onChange({ ...data, booksBefore: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.writingRole} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], writingRole: e.target.value }; onChange({ ...data, booksBefore: recs }); }} placeholder="MM / CB / trang 17-56" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.confirmation} onChange={e => { const recs = [...(data.booksBefore || [])]; recs[idx] = { ...recs[idx], confirmation: e.target.value }; onChange({ ...data, booksBefore: recs }); }} /></td>
+                  <td style={formTdStyle}><button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => { const recs = (data.booksBefore || []).filter((_, i) => i !== idx); onChange({ ...data, booksBefore: recs }); }}>✕</button></td>
+                </tr>
+              ))}
+              {(!data.booksBefore || data.booksBefore.length === 0) && (
+                <tr><td colSpan={8} style={{ ...formTdStyle, textAlign: 'center', color: '#999' }}>Không có sách nào</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Books AFTER */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <label className="form-label" style={{ margin: 0, fontWeight: 'bold', fontStyle: 'italic' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</label>
+          <button className="btn btn-primary" type="button" style={{ fontSize: '0.9rem' }} onClick={() => {
+            const recs = data.booksAfter || [];
+            onChange({ ...data, booksAfter: [...recs, { id: Date.now().toString(), title: '', bookType: '', publisher: '', totalAuthors: '', writingRole: '', confirmation: '' }] });
+          }}>+ Thêm sách</button>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <thead>
+              <tr>
+                <th style={formThStyle}>TT</th>
+                <th style={formThStyle}>Tên sách</th>
+                <th style={formThStyle}>Loại sách</th>
+                <th style={formThStyle}>NXB và năm XB</th>
+                <th style={formThStyle}>Số tác giả</th>
+                <th style={formThStyle}>Viết MM hoặc CB, phản biện soạn</th>
+                <th style={formThStyle}>Xác nhận CS GDĐH</th>
+                <th style={formThStyle}>Xóa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(data.booksAfter || []).map((rec, idx) => (
+                <tr key={rec.id}>
+                  <td style={formTdStyle}>{idx + 1}</td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '140px' }} value={rec.title} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], title: e.target.value }; onChange({ ...data, booksAfter: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '60px' }} value={rec.bookType} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], bookType: e.target.value }; onChange({ ...data, booksAfter: recs }); }} placeholder="GT" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.publisher} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], publisher: e.target.value }; onChange({ ...data, booksAfter: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={tableCellInput} value={rec.totalAuthors} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], totalAuthors: e.target.value }; onChange({ ...data, booksAfter: recs }); }} /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.writingRole} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], writingRole: e.target.value }; onChange({ ...data, booksAfter: recs }); }} placeholder="MM / CB / trang 17-56" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '100px' }} value={rec.confirmation} onChange={e => { const recs = [...(data.booksAfter || [])]; recs[idx] = { ...recs[idx], confirmation: e.target.value }; onChange({ ...data, booksAfter: recs }); }} /></td>
+                  <td style={formTdStyle}><button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => { const recs = (data.booksAfter || []).filter((_, i) => i !== idx); onChange({ ...data, booksAfter: recs }); }}>✕</button></td>
+                </tr>
+              ))}
+              {(!data.booksAfter || data.booksAfter.length === 0) && (
+                <tr><td colSpan={8} style={{ ...formTdStyle, textAlign: 'center', color: '#999' }}>Không có sách nào</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

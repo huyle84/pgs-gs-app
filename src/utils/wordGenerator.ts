@@ -225,17 +225,43 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ children: [new TextRun({ text: `d) Đối tượng khác: ${data.flOther ? '☑' : '☐'}${data.flOther && data.flOtherDetails ? `; Diễn giải: ${data.flOtherDetails}` : ''}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `3.2. Tiếng Anh (văn bằng, chứng chỉ): ${data.flEnglishCert || '......................................................'}`, font: "Times New Roman", size: 28 })], spacing: { before: 100 } }),
 
-        // 4. Guidance
-        new Paragraph({ children: [new TextRun({ text: `4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng):`, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
-        new Paragraph({ children: [new TextRun({ text: data.guidanceDetails || '.......................................................................\\n.......................................................................', font: "Times New Roman", size: 28 })] }),
+        // 4. Guidance Table
+        new Paragraph({ children: [new TextRun({ text: `4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng):`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        ...(data.guidanceRecords && data.guidanceRecords.length > 0 ? [
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new TableRow({ children: [createCell("TT", true), createCell("Họ tên NCS/HV", true), createCell("Đối tượng", true), createCell("TN HD", true), createCell("Thời gian HD", true), createCell("Cơ sở ĐT", true), createCell("Năm cấp bằng", true)] }),
+              ...data.guidanceRecords.map((rec, idx) => new TableRow({
+                children: [createCell((idx + 1).toString()), createTextCell(rec.name), createCell(rec.objectType), createCell(rec.roleMain ? 'Chính' : 'Phụ'), createCell(`${rec.periodFrom}${rec.periodTo ? ' - ' + rec.periodTo : ''}`), createTextCell(rec.institution), createCell(rec.graduationYear)],
+              })),
+            ],
+          }),
+        ] : []),
+        new Paragraph({ children: [new TextRun({ text: "Ghi chú: Ứng viên chức danh GS chỉ kê khai số lượng NCS.", italics: true, font: "Times New Roman", size: 24 })], spacing: { after: 200 } }),
 
-        // 5. Scientific Works
-        new Paragraph({ children: [new TextRun({ text: `5. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
-        
-        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: Trước khi bảo vệ TS (đối với PGS) / Trước khi nhận PGS (đối với GS)`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
+        // 5. Books
+        new Paragraph({ children: [new TextRun({ text: `5. Biên soạn sách phục vụ đào tạo đại học và sau đại học`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: ${data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
+        ...(data.booksBefore && data.booksBefore.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên sách", true), createCell("Loại", true), createCell("NXB, năm", true), createCell("Số TG", true), createCell("MM/CB", true), createCell("Xác nhận", true)] }),
+            ...data.booksBefore.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.title), createCell(r.bookType), createTextCell(r.publisher), createCell(r.totalAuthors), createTextCell(r.writingRole), createTextCell(r.confirmation)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có sách)", italics: true, font: "Times New Roman", size: 28 })] })]),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: ${data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
+        ...(data.booksAfter && data.booksAfter.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên sách", true), createCell("Loại", true), createCell("NXB, năm", true), createCell("Số TG", true), createCell("MM/CB", true), createCell("Xác nhận", true)] }),
+            ...data.booksAfter.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.title), createCell(r.bookType), createTextCell(r.publisher), createCell(r.totalAuthors), createTextCell(r.writingRole), createTextCell(r.confirmation)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có sách)", italics: true, font: "Times New Roman", size: 28 })] })]),
+
+        // 6. Scientific Works
+        new Paragraph({ children: [new TextRun({ text: `6. Bài báo khoa học đã công bố`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: ${data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksBefore),
-
-        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: Sau khi bảo vệ TS (đối với PGS) / Sau khi nhận PGS (đối với GS)`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: ${data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksAfter),
 
         // TỔNG HỢP ĐIỂM

@@ -230,19 +230,117 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           </div>
           <div style={{ ...rowStyle, marginTop: '0.5rem' }}>3.2. Tiếng Anh (văn bằng, chứng chỉ): {data.flEnglishCert || '.......................................................................'}</div>
 
-          {/* 4. Guidance */}
-          <div style={{ ...rowStyle, marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
-            4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng):<br/>
-            {data.guidanceDetails || '.......................................................................................................\n.......................................................................................................'}
-          </div>
+          {/* 4. Guidance Table */}
+          <div style={{ ...rowStyle, marginTop: '1rem', fontWeight: 'bold' }}>4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng)</div>
+          {data.guidanceRecords && data.guidanceRecords.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', marginTop: '0.5rem', fontSize: '11pt' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>TT</th>
+                  <th style={thStyle}>Họ tên NCS hoặc HV</th>
+                  <th style={thStyle}>Đối tượng</th>
+                  <th style={thStyle}>Trách nhiệm HD</th>
+                  <th style={thStyle}>Thời gian HD</th>
+                  <th style={thStyle}>Cơ sở đào tạo</th>
+                  <th style={thStyle}>Năm cấp bằng</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.guidanceRecords.map((rec, idx) => (
+                  <tr key={rec.id}>
+                    <td style={tdStyle}>{idx + 1}</td>
+                    <td style={tdStyle}>{rec.name}</td>
+                    <td style={tdStyle}>{rec.objectType}</td>
+                    <td style={tdStyle}>{rec.roleMain ? 'Chính' : 'Phụ'}</td>
+                    <td style={tdStyle}>{rec.periodFrom}{rec.periodTo ? ` - ${rec.periodTo}` : ''}</td>
+                    <td style={tdStyle}>{rec.institution}</td>
+                    <td style={tdStyle}>{rec.graduationYear}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Chưa có thông tin)</div>
+          )}
+          <div style={{ fontStyle: 'italic', fontSize: '11pt', marginBottom: '1rem' }}>Ghi chú: Ứng viên chức danh GS chỉ kê khai số lượng NCS.</div>
 
-          {/* Scientific Works Section */}
-          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>5. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)</div>
+          {/* 5. Books */}
+          <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>5. Biên soạn sách phục vụ đào tạo đại học và sau đại học</div>
+          <div style={{ fontStyle: 'italic', fontSize: '11pt', marginBottom: '0.5rem' }}>(Tách thành 2 giai đoạn: Đối với PGS: Trước/Sau khi bảo vệ học vị TS; Đối với GS: Trước/Sau khi được công nhận chức danh PGS)</div>
+
+          {/* Books Before */}
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem', marginTop: '1rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
+          {data.booksBefore && data.booksBefore.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>TT</th>
+                  <th style={thStyle}>Tên sách</th>
+                  <th style={thStyle}>Loại sách</th>
+                  <th style={thStyle}>NXB và năm XB</th>
+                  <th style={thStyle}>Số tác giả</th>
+                  <th style={thStyle}>Viết MM hoặc CB</th>
+                  <th style={thStyle}>Xác nhận CS GDĐH</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.booksBefore.map((rec, idx) => (
+                  <tr key={rec.id}>
+                    <td style={tdStyle}>{idx + 1}</td>
+                    <td style={tdStyle}>{rec.title}</td>
+                    <td style={tdStyle}>{rec.bookType}</td>
+                    <td style={tdStyle}>{rec.publisher}</td>
+                    <td style={tdStyle}>{rec.totalAuthors}</td>
+                    <td style={tdStyle}>{rec.writingRole}</td>
+                    <td style={tdStyle}>{rec.confirmation}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có sách)</div>
+          )}
+
+          {/* Books After */}
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
+          {data.booksAfter && data.booksAfter.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>TT</th>
+                  <th style={thStyle}>Tên sách</th>
+                  <th style={thStyle}>Loại sách</th>
+                  <th style={thStyle}>NXB và năm XB</th>
+                  <th style={thStyle}>Số tác giả</th>
+                  <th style={thStyle}>Viết MM hoặc CB</th>
+                  <th style={thStyle}>Xác nhận CS GDĐH</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.booksAfter.map((rec, idx) => (
+                  <tr key={rec.id}>
+                    <td style={tdStyle}>{idx + 1}</td>
+                    <td style={tdStyle}>{rec.title}</td>
+                    <td style={tdStyle}>{rec.bookType}</td>
+                    <td style={tdStyle}>{rec.publisher}</td>
+                    <td style={tdStyle}>{rec.totalAuthors}</td>
+                    <td style={tdStyle}>{rec.writingRole}</td>
+                    <td style={tdStyle}>{rec.confirmation}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có sách)</div>
+          )}
+
+          {/* 6. Scientific Works (was 5, now renumbered) */}
+          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>6. Bài báo khoa học đã công bố</div>
           
-          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: Trước khi bảo vệ TS (đối với PGS) / Trước khi nhận PGS (đối với GS)</div>
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
           {renderWorksTable(worksBefore)}
 
-          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: Sau khi bảo vệ TS (đối với PGS) / Sau khi nhận PGS (đối với GS)</div>
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
           {renderWorksTable(worksAfter)}
 
           {/* Score Summary */}

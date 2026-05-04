@@ -69,8 +69,13 @@ export interface CandidateData {
   flOtherDetails?: string;
   flEnglishCert?: string;
 
-  // PhD & Masters Guidance
-  guidanceDetails?: string;
+  // 4. PhD & Masters Guidance (table)
+  guidanceDetails?: string; // kept for backward compat
+  guidanceRecords?: GuidanceRecord[];
+
+  // 5. Books
+  booksBefore?: BookRecord[];
+  booksAfter?: BookRecord[];
 
   // Section 9: Missing standards replaced by international papers
   missingTimeRequirement?: boolean;
@@ -93,6 +98,28 @@ export interface TeachingRecord {
   teachingUG: string;
   teachingPG: string;
   totalHours: string;
+}
+
+export interface GuidanceRecord {
+  id: string;
+  name: string;
+  objectType: 'NCS' | 'HV';
+  roleMain: boolean;
+  roleSub: boolean;
+  periodFrom: string;
+  periodTo: string;
+  institution: string;
+  graduationYear: string;
+}
+
+export interface BookRecord {
+  id: string;
+  title: string;
+  bookType: string; // CK, GT, TK, HD
+  publisher: string;
+  totalAuthors: string;
+  writingRole: string; // MM, CB, phản biện soạn trang...
+  confirmation: string;
 }
 
 interface Props {
