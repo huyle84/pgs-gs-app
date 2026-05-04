@@ -31,7 +31,23 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
       <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
         Bạn hãy điền các thông tin bổ sung dưới đây để hoàn thiện Mẫu số 01. Những phần nào không có có thể bỏ trống. Dữ liệu sẽ được tự động lưu lại.
       </p>
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Tiêu đề hồ sơ</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className="form-group">
+          <label className="form-label">Tên CQ, TC chủ quản (1)</label>
+          <input type="text" name="organizationName" className="form-control" value={data.organizationName || ''} onChange={handleChange} placeholder="Bộ Giáo dục và Đào tạo..." />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Tên cơ sở đào tạo (2)</label>
+          <input type="text" name="trainingInstitution" className="form-control" value={data.trainingInstitution || ''} onChange={handleChange} placeholder="Trường Đại học..." />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Mã hồ sơ</label>
+          <input type="text" name="applicationCode" className="form-control" value={data.applicationCode || ''} onChange={handleChange} placeholder="Số mã hồ sơ..." />
+        </div>
+      </div>
 
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Thông tin Cá nhân</h3>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
         <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="form-label" style={{ fontWeight: 'bold' }}>Đối tượng đăng ký</label>

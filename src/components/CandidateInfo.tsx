@@ -5,6 +5,11 @@ export interface CandidateData {
   field: 'NATURAL_SCIENCES' | 'SOCIAL_SCIENCES';
   specialty: string;
 
+  // Mau 01 Header
+  organizationName?: string;
+  trainingInstitution?: string;
+  applicationCode?: string;
+
   // Mau 01 Extended Data
   gender?: string;
   nation?: string;

@@ -76,6 +76,26 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
     sections: [{
       properties: {},
       children: [
+        // Mẫu số 01 label
+        new Paragraph({
+          alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: "Mẫu số 01", bold: true, font: "Times New Roman", size: 26 })],
+          spacing: { after: 200 }
+        }),
+
+        // TÊN CQ CHỦ QUẢN
+        new Paragraph({
+          alignment: AlignmentType.LEFT,
+          children: [new TextRun({ text: (data.organizationName || 'TÊN CQ, TC CHỦ QUẢN (1)').toUpperCase(), bold: true, font: "Times New Roman", size: 24 })],
+        }),
+        // TÊN CƠ SỞ ĐÀO TẠO
+        new Paragraph({
+          alignment: AlignmentType.LEFT,
+          children: [new TextRun({ text: (data.trainingInstitution || 'TÊN CƠ SỞ ĐÀO TẠO...(2)...').toUpperCase(), bold: true, underline: { type: "single" }, font: "Times New Roman", size: 24 })],
+          spacing: { after: 200 }
+        }),
+
+        // QUỐC HIỆU
         new Paragraph({
           alignment: AlignmentType.CENTER,
           children: [
@@ -87,21 +107,23 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
           children: [
             new TextRun({ text: "Độc lập - Tự do - Hạnh phúc", bold: true, underline: { type: "single" }, font: "Times New Roman", size: 28 }),
           ],
+          spacing: { after: 400 }
         }),
-        new Paragraph({ text: "", spacing: { after: 400 } }),
+
+        // TITLE
         new Paragraph({
           alignment: AlignmentType.CENTER,
-          children: [
-            new TextRun({ text: "BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN", bold: true, font: "Times New Roman", size: 32 }),
-          ],
+          children: [new TextRun({ text: "BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN", bold: true, font: "Times New Roman", size: 30 })],
         }),
         new Paragraph({
           alignment: AlignmentType.CENTER,
-          children: [
-            new TextRun({ text: `CHỨC DANH: ${data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}`, bold: true, font: "Times New Roman", size: 32 }),
-          ],
+          children: [new TextRun({ text: `CHỨC DANH: ${data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}`, bold: true, font: "Times New Roman", size: 30 })],
         }),
-        new Paragraph({ text: "", spacing: { after: 400 } }),
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [new TextRun({ text: `Mã hồ sơ: ${data.applicationCode || '........................'}`, font: "Times New Roman", size: 28 })],
+          spacing: { after: 400 }
+        }),
 
         // A. THÔNG TIN CÁ NHÂN
         new Paragraph({ children: [new TextRun({ text: "(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)", italics: true, font: "Times New Roman", size: 24 })], spacing: { after: 200 } }),

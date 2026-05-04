@@ -66,21 +66,42 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
         </div>
         
         <div style={documentStyle}>
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <div style={{ fontStyle: 'italic', marginBottom: '1rem', textAlign: 'left' }}>(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)</div>
-            <div style={{ textAlign: 'left', marginBottom: '1rem' }}>
-              Đối tượng đăng ký: Giảng viên {data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'}; 
-              Giảng viên thỉnh giảng {data.registrationType === 'Giảng viên thỉnh giảng' ? '☑' : '☐'}
+          {/* Mẫu số 01 label */}
+          <div style={{ textAlign: 'right', marginBottom: '1rem', fontWeight: 'bold', fontSize: '13pt' }}>Mẫu số 01</div>
+
+          {/* Two-column header: CQ chủ quản / Quốc hiệu */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+            <div style={{ width: '45%' }}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '11pt' }}>{data.organizationName || 'TÊN CQ, TC CHỦ QUẢN (1)'}</div>
+              <div style={{ textAlign: 'center', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '11pt', textDecoration: 'underline' }}>{data.trainingInstitution || 'TÊN CƠ SỞ ĐÀO TẠO...(2)...'}</div>
             </div>
-            <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-              Ngành: {data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'}; 
-              Chuyên ngành: {data.specialty || '.............................................'}
+            <div style={{ width: '50%', textAlign: 'center' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '12pt' }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+              <div style={{ fontWeight: 'bold', fontSize: '13pt', textDecoration: 'underline' }}>Độc lập - Tự do - Hạnh phúc</div>
             </div>
-            <div style={{ fontWeight: 'bold', fontSize: '14pt' }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-            <div style={{ fontWeight: 'bold', fontSize: '15pt', textDecoration: 'underline', marginBottom: '2rem' }}>Độc lập - Tự do - Hạnh phúc</div>
-            <div style={{ fontWeight: 'bold', fontSize: '16pt' }}>BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN</div>
-            <div style={{ fontWeight: 'bold', fontSize: '16pt' }}>CHỨC DANH: {data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}</div>
+          </div>
+
+          {/* Title + Photo placeholder */}
+          <div style={{ display: 'flex', marginBottom: '1.5rem' }}>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '14pt', marginBottom: '0.5rem' }}>BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN</div>
+              <div style={{ fontWeight: 'bold', fontSize: '14pt' }}>CHỨC DANH: {data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}</div>
+              <div style={{ marginTop: '0.5rem' }}>Mã hồ sơ: {data.applicationCode || '........................'}</div>
+            </div>
+            <div style={{ width: '100px', height: '130px', border: '1px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '10pt', textAlign: 'center', color: '#666' }}>
+              Ảnh mẫu<br/>4 x 6
+            </div>
+          </div>
+
+          {/* Checkbox instructions */}
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)</div>
+          <div style={{ marginBottom: '0.5rem' }}>
+            Đối tượng đăng ký: Giảng viên {data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'}; 
+            Giảng viên thỉnh giảng {data.registrationType === 'Giảng viên thỉnh giảng' ? '☑' : '☐'}
+          </div>
+          <div style={{ marginBottom: '1.5rem' }}>
+            Ngành: {data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'}; 
+            Chuyên ngành: {data.specialty || '.............................................'}
           </div>
 
           {/* Section A */}
