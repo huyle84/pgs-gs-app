@@ -7,7 +7,9 @@ import type { CandidateData } from './components/CandidateInfo'
 import { ScientificWorks } from './components/ScientificWorks'
 import { PointSummary } from './components/PointSummary'
 import { FormExport } from './components/FormExport'
+import { Mau01Form } from './components/Mau01Form'
 import { Login } from './components/Login'
+import { generateDocx } from './utils/wordGenerator'
 import { calculateTotalScores } from './utils/calculator'
 import type { ScientificWork } from './utils/calculator'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -28,6 +30,7 @@ function MainApp() {
   const [works, setWorks] = useState<ScientificWork[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'saving' | 'saved' | 'error'>('saved');
+  const [activeTab, setActiveTab] = useState<'ESTIMATOR' | 'MAU01'>('ESTIMATOR');
 
   // Load data from Firestore when user logs in
   useEffect(() => {
@@ -166,18 +169,55 @@ function MainApp() {
             style={{ display: 'none' }} 
           />
         </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+          <div style={{ display: 'flex', background: 'rgba(255,255,255,0.5)', padding: '0.25rem', borderRadius: '12px' }}>
+            <button 
+              className={`btn ${activeTab === 'ESTIMATOR' ? 'btn-primary' : ''}`} 
+              style={{ background: activeTab === 'ESTIMATOR' ? 'var(--primary)' : 'transparent', color: activeTab === 'ESTIMATOR' ? 'white' : 'var(--text-main)', border: 'none', boxShadow: activeTab === 'ESTIMATOR' ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none' }}
+              onClick={() => setActiveTab('ESTIMATOR')}
+            >
+              1. Ước lượng Điểm
+            </button>
+            <button 
+              className={`btn ${activeTab === 'MAU01' ? 'btn-primary' : ''}`} 
+              style={{ background: activeTab === 'MAU01' ? 'var(--primary)' : 'transparent', color: activeTab === 'MAU01' ? 'white' : 'var(--text-main)', border: 'none', boxShadow: activeTab === 'MAU01' ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none' }}
+              onClick={() => setActiveTab('MAU01')}
+            >
+              2. Hoàn thiện Mẫu 01
+            </button>
+          </div>
+        </div>
       </header>
 
       {!isLoaded ? (
         <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--primary)' }}>Đang tải dữ liệu từ Đám mây...</div>
       ) : (
         <>
-          <div className="no-print">
-            <CandidateInfo data={candidateData} onChange={setCandidateData} />
-            <ScientificWorks works={works} onChange={setWorks} />
-            <PointSummary summary={summary} data={candidateData} totalArticles={totalArticles} />
+          {activeTab === 'ESTIMATOR' && (
+            <div className="no-print">
+              <CandidateInfo data={candidateData} onChange={setCandidateData} />
+              <ScientificWorks works={works} onChange={setWorks} />
+              <PointSummary summary={summary} data={candidateData} totalArticles={totalArticles} />
+              
+              <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>Bạn đã tính điểm xong? Chuyển sang bước tiếp theo để hoàn thiện hồ sơ nhé.</p>
+                <button className="btn btn-primary" onClick={() => setActiveTab('MAU01')} style={{ fontSize: '1.2rem', padding: '1rem 2rem' }}>
+                  Tiếp tục điền Mẫu số 01 →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'MAU01' && (
+            <div className="no-print">
+              <Mau01Form data={candidateData} onChange={setCandidateData} onExportWord={() => generateDocx(candidateData, works, summary)} />
+            </div>
+          )}
+
+          <div style={{ display: 'none' }}>
+            {/* Ẩn FormExport cũ vì giờ dùng xuất Word */}
+            <FormExport data={candidateData} works={works} summary={summary} />
           </div>
-          <FormExport data={candidateData} works={works} summary={summary} />
         </>
       )}
       

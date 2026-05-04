@@ -4,6 +4,28 @@ export interface CandidateData {
   targetLevel: 'GS' | 'PGS';
   field: 'NATURAL_SCIENCES' | 'SOCIAL_SCIENCES';
   specialty: string;
+
+  // Mau 01 Extended Data
+  gender?: string;
+  nation?: string;
+  religion?: string;
+  hometown?: string;
+  permanentAddress?: string;
+  contactAddress?: string;
+  phoneMobile?: string;
+  email?: string;
+  workHistory?: string;
+  currentPosition?: string;
+  currentWorkplace?: string;
+  bachelorInfo?: string;
+  masterInfo?: string;
+  doctorInfo?: string;
+  associateProfDate?: string;
+  councilBasic?: string;
+  councilIndustry?: string;
+  researchDirections?: string;
+  foreignLanguage?: string;
+  englishCertificate?: string;
 }
 
 interface Props {

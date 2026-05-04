@@ -19,6 +19,7 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
     isRecent: true,
     isInternationalPublisher: false,
     isExceptionalArticle: false,
+    stage: 'AFTER',
   };
   
   const [newWork, setNewWork] = useState<Partial<ScientificWork>>(initialNewWorkState);
@@ -39,6 +40,7 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
       isRecent: newWork.isRecent!,
       isInternationalPublisher: newWork.isInternationalPublisher,
       isExceptionalArticle: newWork.isExceptionalArticle,
+      stage: newWork.stage!,
     };
 
     if (editingId) {
@@ -113,6 +115,7 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
                 <th>Tác giả</th>
                 <th>Điểm gốc</th>
                 <th>3 năm cuối</th>
+                <th>Giai đoạn</th>
                 <th>Tùy chọn</th>
                 <th style={{ width: '150px' }}>Hành động</th>
               </tr>
@@ -127,6 +130,7 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
                   </td>
                   <td>{work.baseScore}</td>
                   <td>{work.isRecent ? 'Có' : 'Không'}</td>
+                  <td>{work.stage === 'BEFORE' ? 'Trước TS/PGS' : 'Sau TS/PGS'}</td>
                   <td>
                     {work.isExceptionalArticle && <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>[IF vượt trội +50%] </span>}
                     {work.isInternationalPublisher && <span style={{ fontSize: '0.8rem', color: 'var(--success)' }}>[NXB Quốc tế +25%]</span>}
@@ -235,6 +239,17 @@ export const ScientificWorks: React.FC<Props> = ({ works, onChange }) => {
             >
               <option value="true">Trong 3 năm cuối</option>
               <option value="false">Trước đó</option>
+            </select>
+          </div>
+          <div className="form-group" style={{ flex: 1 }}>
+            <label className="form-label">Giai đoạn</label>
+            <select
+              className="form-control"
+              value={newWork.stage}
+              onChange={e => setNewWork({ ...newWork, stage: e.target.value as 'BEFORE' | 'AFTER' })}
+            >
+              <option value="AFTER">Sau khi nhận TS (nếu ứng PGS) hoặc Sau PGS (nếu ứng GS)</option>
+              <option value="BEFORE">Trước khi nhận TS/PGS</option>
             </select>
           </div>
         </div>

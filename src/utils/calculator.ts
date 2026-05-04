@@ -10,6 +10,7 @@ export interface ScientificWork {
   isRecent: boolean; // Công trình trong 3 năm cuối
   isInternationalPublisher?: boolean; // Sách xb bởi NXB uy tín quốc tế
   isExceptionalArticle?: boolean; // Bài báo ISI có IF vượt trội
+  stage: 'BEFORE' | 'AFTER'; // Trước hay sau khi bảo vệ TS / đạt chuẩn PGS
 }
 
 export interface ScoreSummary {
