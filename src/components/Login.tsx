@@ -1,45 +1,41 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 export const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState('');
-  
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
+    if (!email || !password) {
+      setError('Vui lòng nhập đầy đủ Email và mật khẩu.');
       return;
     }
 
-    // Logic giả lập: lưu toàn bộ danh sách user trong localStorage với key 'gs_pgs_users'
-    const usersStr = localStorage.getItem('gs_pgs_users');
-    const users: Record<string, string> = usersStr ? JSON.parse(usersStr) : {};
+    setLoading(true);
+    setError('');
 
-    if (isRegistering) {
-      if (users[username]) {
-        setError('Tài khoản này đã tồn tại. Vui lòng chọn tên khác hoặc đăng nhập.');
-        return;
+    try {
+      if (isRegistering) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
       }
-      // Tạo tài khoản mới
-      users[username] = password;
-      localStorage.setItem('gs_pgs_users', JSON.stringify(users));
-      login(username);
-    } else {
-      if (!users[username]) {
-        setError('Tài khoản không tồn tại. Vui lòng đăng ký mới.');
-        return;
-      }
-      if (users[username] !== password) {
-        setError('Mật khẩu không chính xác.');
-        return;
-      }
-      // Đăng nhập thành công
-      login(username);
+    } catch (err: any) {
+      let msg = 'Đã có lỗi xảy ra. Vui lòng thử lại.';
+      if (err.code === 'auth/email-already-in-use') msg = 'Email này đã được sử dụng.';
+      else if (err.code === 'auth/invalid-email') msg = 'Email không hợp lệ.';
+      else if (err.code === 'auth/weak-password') msg = 'Mật khẩu quá yếu (cần ít nhất 6 ký tự).';
+      else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') 
+        msg = 'Email hoặc mật khẩu không chính xác.';
+      
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,13 +50,13 @@ export const Login = () => {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Tên đăng nhập / Số điện thoại</label>
+            <label className="form-label">Email</label>
             <input
-              type="text"
+              type="email"
               className="form-control"
-              value={username}
-              onChange={e => { setUsername(e.target.value); setError(''); }}
-              placeholder="Nhập tên tài khoản"
+              value={email}
+              onChange={e => { setEmail(e.target.value); setError(''); }}
+              placeholder="Nhập địa chỉ email"
             />
           </div>
           <div className="form-group">
@@ -70,12 +66,12 @@ export const Login = () => {
               className="form-control"
               value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
-              placeholder="Nhập mật khẩu"
+              placeholder="Nhập mật khẩu (ít nhất 6 ký tự)"
             />
           </div>
           
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
-            {isRegistering ? 'Tạo tài khoản' : 'Đăng nhập'}
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
+            {loading ? 'Đang xử lý...' : (isRegistering ? 'Tạo tài khoản' : 'Đăng nhập')}
           </button>
         </form>
 

@@ -1,4 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { db } from './config/firebase'
+
 import { CandidateInfo } from './components/CandidateInfo'
 import type { CandidateData } from './components/CandidateInfo'
 import { ScientificWorks } from './components/ScientificWorks'
@@ -24,33 +27,55 @@ function MainApp() {
 
   const [works, setWorks] = useState<ScientificWork[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'saving' | 'saved' | 'error'>('saved');
 
-  // Load data from localStorage when user logs in
+  // Load data from Firestore when user logs in
   useEffect(() => {
-    if (currentUser) {
-      const savedData = localStorage.getItem(`gs_pgs_data_${currentUser.username}`);
-      if (savedData) {
+    const fetchData = async () => {
+      if (currentUser) {
         try {
-          const parsed = JSON.parse(savedData);
-          if (parsed.candidateData) setCandidateData(parsed.candidateData);
-          if (parsed.works) setWorks(parsed.works);
-        } catch (e) {
-          console.error("Lỗi khi load dữ liệu từ localStorage", e);
+          const docRef = doc(db, 'users', currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.candidateData) setCandidateData(data.candidateData);
+            if (data.works) setWorks(data.works);
+          }
+        } catch (error) {
+          console.error("Lỗi khi tải dữ liệu từ Cloud:", error);
+        } finally {
+          setIsLoaded(true);
         }
+      } else {
+        setIsLoaded(false);
       }
-      setIsLoaded(true);
-    }
+    };
+    fetchData();
   }, [currentUser]);
 
-  // Auto-save data to localStorage when it changes
+  // Auto-save data to Firestore when it changes
   useEffect(() => {
-    if (currentUser && isLoaded) {
-      const dataToSave = {
-        candidateData,
-        works
-      };
-      localStorage.setItem(`gs_pgs_data_${currentUser.username}`, JSON.stringify(dataToSave));
-    }
+    const saveData = async () => {
+      if (currentUser && isLoaded) {
+        setSaveStatus('saving');
+        try {
+          const docRef = doc(db, 'users', currentUser.uid);
+          await setDoc(docRef, { candidateData, works });
+          setSaveStatus('saved');
+        } catch (error) {
+          console.error("Lỗi khi đồng bộ lên Cloud:", error);
+          setSaveStatus('error');
+        }
+      }
+    };
+
+    // Debounce save (wait 1s after last change before saving to avoid spamming the DB)
+    const timeoutId = setTimeout(() => {
+      saveData();
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
   }, [candidateData, works, currentUser, isLoaded]);
 
   const summary = useMemo(() => calculateTotalScores(works), [works]);
@@ -82,12 +107,11 @@ function MainApp() {
         const parsed = JSON.parse(content);
         if (parsed.candidateData) setCandidateData(parsed.candidateData);
         if (parsed.works) setWorks(parsed.works);
-        alert('Đã tải dữ liệu thành công!');
+        alert('Đã tải dữ liệu thành công! (Dữ liệu sẽ được tự động đồng bộ lên Đám mây)');
       } catch (error) {
         alert('File không hợp lệ hoặc bị lỗi!');
         console.error(error);
       }
-      // Reset input
       if (fileInputRef.current) fileInputRef.current.value = '';
     };
     reader.readAsText(file);
@@ -112,8 +136,10 @@ function MainApp() {
       <header className="no-print" style={{ textAlign: 'center', marginBottom: '3rem', paddingTop: '2rem', position: 'relative' }}>
         <div style={{ position: 'absolute', right: 0, top: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            Xin chào, <strong>{currentUser.username}</strong>
-            <div style={{ fontSize: '0.75rem', color: 'var(--success)' }}>Trạng thái: Đã lưu tự động</div>
+            Tài khoản: <strong>{currentUser.email}</strong>
+            <div style={{ fontSize: '0.75rem', color: saveStatus === 'saving' ? 'var(--primary)' : saveStatus === 'error' ? 'var(--danger)' : 'var(--success)' }}>
+              {saveStatus === 'saving' ? 'Đang đồng bộ...' : saveStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ lên Đám mây'}
+            </div>
           </span>
           <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }} onClick={logout}>
             Đăng xuất
@@ -142,13 +168,18 @@ function MainApp() {
         </div>
       </header>
 
-      <div className="no-print">
-        <CandidateInfo data={candidateData} onChange={setCandidateData} />
-        <ScientificWorks works={works} onChange={setWorks} />
-        <PointSummary summary={summary} data={candidateData} totalArticles={totalArticles} />
-      </div>
-
-      <FormExport data={candidateData} works={works} summary={summary} />
+      {!isLoaded ? (
+        <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--primary)' }}>Đang tải dữ liệu từ Đám mây...</div>
+      ) : (
+        <>
+          <div className="no-print">
+            <CandidateInfo data={candidateData} onChange={setCandidateData} />
+            <ScientificWorks works={works} onChange={setWorks} />
+            <PointSummary summary={summary} data={candidateData} totalArticles={totalArticles} />
+          </div>
+          <FormExport data={candidateData} works={works} summary={summary} />
+        </>
+      )}
       
       <footer className="no-print" style={{ textAlign: 'center', marginTop: '4rem', paddingBottom: '2rem', color: 'var(--text-muted)' }}>
         <p>© 2026 GS/PGS Estimator. Hệ thống tự động tính điểm dành cho Ứng viên Giáo sư / Phó Giáo sư.</p>
