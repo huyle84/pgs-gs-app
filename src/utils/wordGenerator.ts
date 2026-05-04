@@ -173,9 +173,9 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: Sau khi bảo vệ TS (đối với PGS) / Sau khi nhận PGS (đối với GS)`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksAfter),
 
-        // C. TỔNG HỢP ĐIỂM
+        // TỔNG HỢP ĐIỂM
         new Paragraph({
-          children: [new TextRun({ text: "C. TỔNG HỢP ĐIỂM QUY ĐỔI", bold: true, font: "Times New Roman", size: 28 })],
+          children: [new TextRun({ text: "TỔNG HỢP ĐIỂM QUY ĐỔI", bold: true, font: "Times New Roman", size: 28 })],
           spacing: { before: 400, after: 200 }
         }),
         new Paragraph({ children: [new TextRun({ text: `- Tổng điểm quy đổi công trình khoa học: ${summary.totalPoints.toFixed(2)} điểm`, font: "Times New Roman", size: 28 })] }),
@@ -183,16 +183,32 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ children: [new TextRun({ text: `- Tổng điểm bài báo/sáng chế: ${summary.articlePoints.toFixed(2)} điểm`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `- Tổng điểm viết sách: ${summary.bookPoints.toFixed(2)} điểm`, font: "Times New Roman", size: 28 })] }),
 
-        new Paragraph({ text: "", spacing: { after: 600 } }),
-        
-        // SIGNATURE
+        // Section 9: Missing standards
+        new Paragraph({
+          children: [new TextRun({ text: "9. Các tiêu chuẩn còn thiếu so với quy định cần được thay thế bằng bài báo khoa học quốc tế uy tín:", font: "Times New Roman", size: 28 })],
+          spacing: { before: 400, after: 100 }
+        }),
+        new Paragraph({ children: [new TextRun({ text: `- Thời gian được cấp bằng TS, được bổ nhiệm PGS:  ${data.missingTimeRequirement ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `- Giờ chuẩn giảng dạy:  ${data.missingTeachingHours ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `- Công trình khoa học đã công bố:  ${data.missingPublications ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `- Chủ trì nhiệm vụ khoa học và công nghệ:  ${data.missingScienceProjects ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `- Hướng dẫn NCS, ThS:  ${data.missingGuidance ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+
+        // C. CAM ĐOAN
+        new Paragraph({
+          children: [new TextRun({ text: "C. CAM ĐOAN CỦA NGƯỜI ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN CHỨC DANH:", bold: true, font: "Times New Roman", size: 28 })],
+          spacing: { before: 400, after: 200 }
+        }),
+        new Paragraph({ children: [new TextRun({ text: "Tôi cam đoan những điều khai trên là đúng, nếu sai tôi xin chịu trách nhiệm trước pháp luật.", font: "Times New Roman", size: 28 })], indent: { firstLine: 720 } }),
+
+        new Paragraph({ text: "", spacing: { after: 400 } }),
         new Paragraph({
           alignment: AlignmentType.RIGHT,
-          children: [new TextRun({ text: "......., ngày ..... tháng ..... năm 20...", italics: true, font: "Times New Roman", size: 28 })],
+          children: [new TextRun({ text: `......${data.signingLocation || '.'}, ngày ..... tháng ..... năm ........`, italics: true, font: "Times New Roman", size: 28 })],
         }),
         new Paragraph({
           alignment: AlignmentType.RIGHT,
-          children: [new TextRun({ text: "NGƯỜI ĐĂNG KÝ         ", bold: true, font: "Times New Roman", size: 28 })],
+          children: [new TextRun({ text: "Người đăng ký         ", bold: true, font: "Times New Roman", size: 28 })],
         }),
         new Paragraph({
           alignment: AlignmentType.RIGHT,
@@ -201,8 +217,41 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ text: "", spacing: { after: 800 } }),
         new Paragraph({
           alignment: AlignmentType.RIGHT,
-          children: [new TextRun({ text: data.fullName, bold: true, font: "Times New Roman", size: 28 })],
+          children: [new TextRun({ text: `${data.fullName}         `, bold: true, font: "Times New Roman", size: 28 })],
         }),
+
+        // D. XÁC NHẬN
+        new Paragraph({
+          children: [new TextRun({ text: "D. XÁC NHẬN CỦA NGƯỜI ĐỨNG ĐẦU NƠI ĐANG LÀM VIỆC", bold: true, font: "Times New Roman", size: 28 })],
+          spacing: { before: 600, after: 200 }
+        }),
+        new Paragraph({ children: [new TextRun({ text: "- Về những nội dung \"Thông tin cá nhân\" ứng viên đã kê khai.", font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: "- Về giai đoạn ứng viên công tác tại đơn vị và mức độ hoàn thành nhiệm vụ trong giai đoạn này.", font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: "(Những nội dung khác đã kê khai, ứng viên tự chịu trách nhiệm trước pháp luật).", italics: true, font: "Times New Roman", size: 28 })], spacing: { after: 400 } }),
+
+        new Paragraph({
+          alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: `......${data.signingLocation || '.'}, ngày ..... tháng ..... năm ........`, italics: true, font: "Times New Roman", size: 28 })],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: "THỦ TRƯỞNG CƠ QUAN         ", bold: true, font: "Times New Roman", size: 28 })],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: "(Ký và ghi rõ họ tên, đóng dấu)         ", italics: true, font: "Times New Roman", size: 24 })],
+        }),
+        new Paragraph({ text: "", spacing: { after: 1200 } }),
+
+        // Ghi chú
+        new Paragraph({
+          children: [new TextRun({ text: "Ghi chú:", bold: true, italics: true, font: "Times New Roman", size: 24 })],
+          spacing: { before: 600 },
+          border: { top: { style: BorderStyle.SINGLE, size: 1, space: 4, color: "000000" } }
+        }),
+        new Paragraph({ children: [new TextRun({ text: "(1) Tên cơ quan, tổ chức chủ quản trực tiếp (nếu có).", font: "Times New Roman", size: 24 })] }),
+        new Paragraph({ children: [new TextRun({ text: "(2) Tên cơ sở đào tạo.", font: "Times New Roman", size: 24 })] }),
+        new Paragraph({ children: [new TextRun({ text: "(3) Địa danh.", font: "Times New Roman", size: 24 })] }),
       ],
     }],
   });

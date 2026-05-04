@@ -164,20 +164,59 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: Sau khi bảo vệ TS (đối với PGS) / Sau khi nhận PGS (đối với GS)</div>
           {renderWorksTable(worksAfter)}
 
-          {/* Section C */}
-          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>C. TỔNG HỢP ĐIỂM QUY ĐỔI</div>
+          {/* Score Summary */}
+          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>TỔNG HỢP ĐIỂM QUY ĐỔI</div>
           <div>- Tổng điểm quy đổi công trình khoa học: <strong>{summary.totalPoints.toFixed(2)}</strong> điểm</div>
           <div>- Tổng điểm 3 năm cuối: <strong>{summary.recentPoints.toFixed(2)}</strong> điểm</div>
           <div>- Tổng điểm bài báo/sáng chế: <strong>{summary.articlePoints.toFixed(2)}</strong> điểm</div>
           <div>- Tổng điểm viết sách: <strong>{summary.bookPoints.toFixed(2)}</strong> điểm</div>
+
+          {/* Section 9: Missing standards */}
+          <div style={{ marginTop: '2rem' }}>
+            <div style={rowStyle}>9. Các tiêu chuẩn còn thiếu so với quy định cần được thay thế bằng bài báo khoa học quốc tế uy tín:</div>
+            <div style={{ marginLeft: '1rem' }}>
+              <div style={rowStyle}>- Thời gian được cấp bằng TS, được bổ nhiệm PGS: {data.missingTimeRequirement ? '☑' : '☐'}</div>
+              <div style={rowStyle}>- Giờ chuẩn giảng dạy: {data.missingTeachingHours ? '☑' : '☐'}</div>
+              <div style={rowStyle}>- Công trình khoa học đã công bố: {data.missingPublications ? '☑' : '☐'}</div>
+              <div style={rowStyle}>- Chủ trì nhiệm vụ khoa học và công nghệ: {data.missingScienceProjects ? '☑' : '☐'}</div>
+              <div style={rowStyle}>- Hướng dẫn NCS, ThS: {data.missingGuidance ? '☑' : '☐'}</div>
+            </div>
+          </div>
+
+          {/* Section C: Cam đoan */}
+          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>C. CAM ĐOAN CỦA NGƯỜI ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN CHỨC DANH:</div>
+          <div style={{ marginBottom: '1rem', textIndent: '2rem' }}>Tôi cam đoan những điều khai trên là đúng, nếu sai tôi xin chịu trách nhiệm trước pháp luật.</div>
           
-          <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
             <div style={{ textAlign: 'center', width: '300px' }}>
-              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>......., ngày ..... tháng ..... năm 20...</div>
-              <div style={{ fontWeight: 'bold' }}>NGƯỜI ĐĂNG KÝ</div>
+              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>......{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
+              <div style={{ fontWeight: 'bold' }}>Người đăng ký</div>
               <div style={{ fontStyle: 'italic' }}>(Ký và ghi rõ họ tên)</div>
               <div style={{ marginTop: '4rem', fontWeight: 'bold' }}>{data.fullName}</div>
             </div>
+          </div>
+
+          {/* Section D: Xác nhận */}
+          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '3rem 0 1rem' }}>D. XÁC NHẬN CỦA NGƯỜI ĐỨNG ĐẦU NƠI ĐANG LÀM VIỆC</div>
+          <div style={rowStyle}>- Về những nội dung "Thông tin cá nhân" ứng viên đã kê khai.</div>
+          <div style={rowStyle}>- Về giai đoạn ứng viên công tác tại đơn vị và mức độ hoàn thành nhiệm vụ trong giai đoạn này.</div>
+          <div style={{ fontStyle: 'italic', marginTop: '0.5rem' }}>(Những nội dung khác đã kê khai, ứng viên tự chịu trách nhiệm trước pháp luật).</div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ textAlign: 'center', width: '350px' }}>
+              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>......{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
+              <div style={{ fontWeight: 'bold' }}>THỦ TRƯỞNG CƠ QUAN</div>
+              <div style={{ fontStyle: 'italic' }}>(Ký và ghi rõ họ tên, đóng dấu)</div>
+              <div style={{ marginTop: '4rem' }}>&nbsp;</div>
+            </div>
+          </div>
+
+          {/* Ghi chú */}
+          <div style={{ marginTop: '3rem', borderTop: '1px solid #000', paddingTop: '0.5rem', fontSize: '11pt' }}>
+            <div style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Ghi chú:</div>
+            <div>(1) Tên cơ quan, tổ chức chủ quản trực tiếp (nếu có).</div>
+            <div>(2) Tên cơ sở đào tạo.</div>
+            <div>(3) Địa danh.</div>
           </div>
         </div>
       </div>

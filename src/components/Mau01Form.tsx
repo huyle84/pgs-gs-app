@@ -359,6 +359,35 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
           <textarea name="guidanceDetails" className="form-control" rows={4} value={data.guidanceDetails || ''} onChange={handleChange} placeholder="Liệt kê tên NCS/học viên, đề tài, năm bảo vệ..." />
         </div>
       </div>
+
+      {/* Section 9: Các tiêu chuẩn còn thiếu */}
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>9. Các tiêu chuẩn còn thiếu cần thay thế bằng bài báo KHQT uy tín</h3>
+      <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {[
+          { key: 'missingTimeRequirement', label: 'Thời gian được cấp bằng TS, được bổ nhiệm PGS' },
+          { key: 'missingTeachingHours', label: 'Giờ chuẩn giảng dạy' },
+          { key: 'missingPublications', label: 'Công trình khoa học đã công bố' },
+          { key: 'missingScienceProjects', label: 'Chủ trì nhiệm vụ khoa học và công nghệ' },
+          { key: 'missingGuidance', label: 'Hướng dẫn NCS, ThS' },
+        ].map(item => (
+          <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+            <input type="checkbox" checked={(data as unknown as Record<string, unknown>)[item.key] as boolean || false} onChange={e => onChange({ ...data, [item.key]: e.target.checked })} />
+            <span>{item.label}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* Section C & D: Signing */}
+      <h3 style={{ borderBottom: '2px solid var(--primary)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>C & D. Cam đoan & Xác nhận</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+          <label className="form-label">Địa danh (nơi ký xác nhận)</label>
+          <input type="text" name="signingLocation" className="form-control" value={data.signingLocation || ''} onChange={handleChange} placeholder="Ví dụ: Hà Nội, TP. Hồ Chí Minh..." />
+        </div>
+      </div>
+      <p style={{ color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1rem' }}>
+        Phần C (Cam đoan của người đăng ký) và Phần D (Xác nhận của Thủ trưởng cơ quan) sẽ được tự động in trong file Word xuất ra. Ứng viên chỉ cần ký tên sau khi in.
+      </p>
       
       <div style={{ marginTop: '2rem', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
         <button className="btn btn-outline" style={{ padding: '1rem 2rem', fontSize: '1.2rem' }} onClick={onPreview}>

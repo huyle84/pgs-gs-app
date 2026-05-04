@@ -71,6 +71,16 @@ export interface CandidateData {
 
   // PhD & Masters Guidance
   guidanceDetails?: string;
+
+  // Section 9: Missing standards replaced by international papers
+  missingTimeRequirement?: boolean;
+  missingTeachingHours?: boolean;
+  missingPublications?: boolean;
+  missingScienceProjects?: boolean;
+  missingGuidance?: boolean;
+
+  // Signing info
+  signingLocation?: string;
 }
 
 export interface TeachingRecord {
