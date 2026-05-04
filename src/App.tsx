@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { CandidateInfo } from './components/CandidateInfo'
 import type { CandidateData } from './components/CandidateInfo'
 import { ScientificWorks } from './components/ScientificWorks'
@@ -12,6 +12,7 @@ import './index.css'
 
 function MainApp() {
   const { currentUser, logout } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [candidateData, setCandidateData] = useState<CandidateData>({
     fullName: '',
@@ -29,9 +30,13 @@ function MainApp() {
     if (currentUser) {
       const savedData = localStorage.getItem(`gs_pgs_data_${currentUser.username}`);
       if (savedData) {
-        const parsed = JSON.parse(savedData);
-        if (parsed.candidateData) setCandidateData(parsed.candidateData);
-        if (parsed.works) setWorks(parsed.works);
+        try {
+          const parsed = JSON.parse(savedData);
+          if (parsed.candidateData) setCandidateData(parsed.candidateData);
+          if (parsed.works) setWorks(parsed.works);
+        } catch (e) {
+          console.error("Lỗi khi load dữ liệu từ localStorage", e);
+        }
       }
       setIsLoaded(true);
     }
@@ -53,6 +58,40 @@ function MainApp() {
   const totalArticles = useMemo(() => {
     return works.filter(w => ['articleISI', 'articleISSNOnline', 'articleISSNOffline'].includes(w.type)).length;
   }, [works]);
+
+  const handleExportJson = () => {
+    const dataToSave = { candidateData, works };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToSave, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    const fileName = candidateData.fullName ? `BanNhap_GSPGS_${candidateData.fullName.replace(/\s+/g, '')}.json` : "BanNhap_GSPGS.json";
+    downloadAnchorNode.setAttribute("download", fileName);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const parsed = JSON.parse(content);
+        if (parsed.candidateData) setCandidateData(parsed.candidateData);
+        if (parsed.works) setWorks(parsed.works);
+        alert('Đã tải dữ liệu thành công!');
+      } catch (error) {
+        alert('File không hợp lệ hoặc bị lỗi!');
+        console.error(error);
+      }
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
 
   if (!currentUser) {
     return (
@@ -85,6 +124,22 @@ function MainApp() {
         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
           Hệ thống ước tính điểm quy đổi chức danh Giáo sư, Phó Giáo sư theo QĐ 37/2018 và QĐ 25/2020
         </p>
+
+        <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <button className="btn btn-outline" onClick={handleExportJson} style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}>
+            💾 Tải bản nháp về máy (.json)
+          </button>
+          <button className="btn btn-outline" onClick={() => fileInputRef.current?.click()} style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}>
+            📂 Mở bản nháp (.json)
+          </button>
+          <input 
+            type="file" 
+            accept=".json" 
+            ref={fileInputRef} 
+            onChange={handleImportJson} 
+            style={{ display: 'none' }} 
+          />
+        </div>
       </header>
 
       <div className="no-print">
