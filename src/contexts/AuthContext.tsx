@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signOut,
+  updatePassword as firebaseUpdatePassword
+} from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -8,6 +12,7 @@ interface AuthContextType {
   currentUser: FirebaseUser | null;
   loading: boolean;
   logout: () => Promise<void>;
+  updateUserPassword: (newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,6 +39,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateUserPassword = (newPassword: string) => {
+    if (!currentUser) throw new Error('Chưa đăng nhập');
+    return firebaseUpdatePassword(currentUser, newPassword);
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--primary)' }}>
@@ -43,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ currentUser, loading, logout }}>
+    <AuthContext.Provider value={{ currentUser, loading, logout, updateUserPassword }}>
       {children}
     </AuthContext.Provider>
   );

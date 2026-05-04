@@ -107,7 +107,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         // A. THÔNG TIN CÁ NHÂN
         new Paragraph({ children: [new TextRun({ text: "A. THÔNG TIN CÁ NHÂN", bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400, after: 200 } }),
         new Paragraph({ children: [new TextRun({ text: `1. Họ và tên người đăng ký: ${data.fullName || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `2. Ngày tháng năm sinh: ${data.birthYear || '...........................'}; Giới tính: ${data.gender || '........'}; Quốc tịch: Việt Nam`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `2. Ngày tháng năm sinh: ${data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'}; Giới tính: ${data.gender || '........'}; Quốc tịch: Việt Nam`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `Dân tộc: ${data.nation || '.......................'}; Tôn giáo: ${data.religion || '.......................'}; Đảng viên: ${data.isPartyMember ? 'Có' : 'Không'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `3. Quê quán: ${data.hometown || '.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `4. Nơi đăng ký hộ khẩu thường trú: ${data.permanentAddress || '......................................................'}`, font: "Times New Roman", size: 28 })] }),

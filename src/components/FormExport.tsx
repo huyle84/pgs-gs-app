@@ -30,10 +30,12 @@ export const FormExport: React.FC<Props> = ({ data, works, summary }) => {
         </div>
 
         <div>
-          <p>Kính gửi: Hội đồng Giáo sư cơ sở...</p>
-          <p><strong>1. Họ và tên:</strong> {data.fullName || '........................................'}</p>
-          <p><strong>2. Năm sinh:</strong> {data.birthYear || '........................................'}</p>
+          <div style={{ marginBottom: '1.5rem' }}>
+          <p><strong>1. Họ và tên người đăng ký:</strong> <span style={{ textTransform: 'uppercase' }}>{data.fullName || '........................................'}</span></p>
+          <p><strong>2. Ngày tháng năm sinh:</strong> {data.birthDate || '........................................'}</p>
+          <p><strong>3. Quê quán:</strong> ........................................................................</p>
           <p><strong>3. Đăng ký xét chức danh:</strong> {data.targetLevel === 'GS' ? 'Giáo sư' : 'Phó Giáo sư'} - <strong>Ngành/Chuyên ngành:</strong> {data.specialty || '........................................'}</p>
+          </div>
           
           <h4 style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>A. TỔNG HỢP CÔNG TRÌNH KHOA HỌC</h4>
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse', marginBottom: '1rem' }}>
