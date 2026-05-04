@@ -104,26 +104,39 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ text: "", spacing: { after: 400 } }),
 
         // A. THÔNG TIN CÁ NHÂN
+        new Paragraph({ children: [new TextRun({ text: "(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)", italics: true, font: "Times New Roman", size: 24 })], spacing: { after: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: `Đối tượng đăng ký: Giảng viên ${data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'}; Giảng viên thỉnh giảng ${data.registrationType === 'Giảng viên thỉnh giảng' ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Ngành: ${data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'}; Chuyên ngành: ${data.specialty || '.............................................'}`, font: "Times New Roman", size: 28 })], spacing: { after: 400 } }),
+
         new Paragraph({
           children: [new TextRun({ text: "A. THÔNG TIN CÁ NHÂN", bold: true, font: "Times New Roman", size: 28 })],
-          spacing: { before: 400, after: 200 }
+          spacing: { before: 200, after: 200 }
         }),
         new Paragraph({ children: [new TextRun({ text: `1. Họ và tên người đăng ký: ${data.fullName || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `2. Ngày tháng năm sinh: ${data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'}; Giới tính: ${data.gender || '........'}; Quốc tịch: Việt Nam`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `2. Ngày tháng năm sinh: ${data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'}; Nam ${data.gender?.toLowerCase() === 'nam' ? '☑' : '☐'} Nữ ${data.gender?.toLowerCase() === 'nữ' ? '☑' : '☐'}; Quốc tịch: Việt Nam`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `Dân tộc: ${data.nation || '.......................'}; Tôn giáo: ${data.religion || '.......................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `3. Quê quán: ${data.hometown || '.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `4. Nơi đăng ký hộ khẩu thường trú: ${data.permanentAddress || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `5. Địa chỉ liên hệ: ${data.contactAddress || '.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `Điện thoại: ${data.phoneMobile || '.......................'}; Email: ${data.email || '.......................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `6. Quá trình công tác: ${data.workHistory || '\n.......................................................................\n.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `7. Chức vụ hiện nay: ${data.currentPosition || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `3. Đảng viên Đảng Cộng sản Việt Nam: ${data.isPartyMember ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `4. Quê quán: ${data.hometown || '.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `5. Nơi đăng ký hộ khẩu thường trú: ${data.permanentAddress || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `6. Địa chỉ liên hệ (ghi rõ, đầy đủ để liên hệ được qua Bưu điện): ${data.contactAddress || '.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Điện thoại nhà riêng: ${data.phoneHome || '.......................'}; Điện thoại di động: ${data.phoneMobile || '.......................'}; Email: ${data.email || '.......................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `7. Quá trình công tác (công việc, chức vụ, cơ quan):`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: data.workHistory || 'Từ năm........ đến năm........: ..................................................................................\nTừ năm........ đến năm........: ..................................................................................', font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Chức vụ: Hiện nay: ${data.currentPosition || '.......................................'}; Chức vụ cao nhất đã qua: ${data.highestPastPosition || '.......................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `Cơ quan công tác hiện nay: ${data.currentWorkplace || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `8. Học vị:`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Địa chỉ cơ quan: ${data.workplaceAddress || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Điện thoại cơ quan: ${data.workplacePhone || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Thỉnh giảng tại cơ sở giáo dục đại học (nếu có): ${data.visitingSchool || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `8. Đã nghỉ hưu từ tháng ${data.retiredDate || '........ năm ........'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Nơi làm việc sau khi nghỉ hưu (nếu có): ${data.postRetirementWorkplace || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Tên cơ sở giáo dục đại học nơi hợp đồng thỉnh giảng 3 năm cuối (tính đến thời điểm hết hạn nộp hồ sơ): ${data.recentVisitingSchool || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        
+        new Paragraph({ children: [new TextRun({ text: `9. Học vị:`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `- Bằng ĐH: ${data.bachelorInfo || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `- Bằng ThS: ${data.masterInfo || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `- Bằng TS: ${data.doctorInfo || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `9. Ngoại ngữ: ${data.foreignLanguage || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
-        new Paragraph({ children: [new TextRun({ text: `10. Các hướng nghiên cứu chủ yếu: ${data.researchDirections || '\n.......................................................................\n.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `10. Ngoại ngữ: ${data.foreignLanguage || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `11. Các hướng nghiên cứu chủ yếu:\n${data.researchDirections || '.......................................................................\n.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
         
         // B. KẾT QUẢ ĐÀO TẠO VÀ NGHIÊN CỨU
         new Paragraph({

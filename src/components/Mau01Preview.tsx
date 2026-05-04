@@ -68,6 +68,15 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
         <div style={documentStyle}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div style={{ fontStyle: 'italic', marginBottom: '1rem', textAlign: 'left' }}>(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)</div>
+            <div style={{ textAlign: 'left', marginBottom: '1rem' }}>
+              Đối tượng đăng ký: Giảng viên {data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'}; 
+              Giảng viên thỉnh giảng {data.registrationType === 'Giảng viên thỉnh giảng' ? '☑' : '☐'}
+            </div>
+            <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+              Ngành: {data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'}; 
+              Chuyên ngành: {data.specialty || '.............................................'}
+            </div>
             <div style={{ fontWeight: 'bold', fontSize: '14pt' }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
             <div style={{ fontWeight: 'bold', fontSize: '15pt', textDecoration: 'underline', marginBottom: '2rem' }}>Độc lập - Tự do - Hạnh phúc</div>
             <div style={{ fontWeight: 'bold', fontSize: '16pt' }}>BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN</div>
@@ -79,36 +88,48 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={rowStyle}>1. Họ và tên người đăng ký: <strong>{data.fullName || '.........................................................'}</strong></div>
           <div style={rowStyle}>
             2. Ngày tháng năm sinh: {data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'}; 
-            Giới tính: {data.gender || '...........................'}; 
+            Nam {data.gender?.toLowerCase() === 'nam' ? '☑' : '☐'} 
+            Nữ {data.gender?.toLowerCase() === 'nữ' ? '☑' : '☐'}; 
             Quốc tịch: Việt Nam
           </div>
           <div style={rowStyle}>
             Dân tộc: {data.nation || '.............................................'}; 
             Tôn giáo: {data.religion || '..................................................'}
           </div>
-          <div style={rowStyle}>3. Quê quán: {data.hometown || '.......................................................................................................'}</div>
-          <div style={rowStyle}>4. Nơi đăng ký hộ khẩu thường trú: {data.permanentAddress || '...................................................................................'}</div>
-          <div style={rowStyle}>5. Địa chỉ liên hệ: {data.contactAddress || '.......................................................................................................'}</div>
-          <div style={rowStyle}>Điện thoại: {data.phoneMobile || '...........................'}; Email: {data.email || '...........................'}</div>
-          
-          <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-            6. Quá trình công tác:<br/>
-            {data.workHistory || '.......................................................................................................\n.......................................................................................................'}
+          <div style={rowStyle}>3. Đảng viên Đảng Cộng sản Việt Nam: {data.isPartyMember ? '☑' : '☐'}</div>
+          <div style={rowStyle}>4. Quê quán: {data.hometown || '.......................................................................................................'}</div>
+          <div style={rowStyle}>5. Nơi đăng ký hộ khẩu thường trú: {data.permanentAddress || '...................................................................................'}</div>
+          <div style={rowStyle}>6. Địa chỉ liên hệ: {data.contactAddress || '.......................................................................................................'}</div>
+          <div style={rowStyle}>
+            Điện thoại nhà riêng: {data.phoneHome || '...........................'}; 
+            Điện thoại di động: {data.phoneMobile || '...........................'}; 
+            E-mail: {data.email || '...........................'}
           </div>
           
-          <div style={rowStyle}>7. Chức vụ hiện nay: {data.currentPosition || '.......................................................................'}</div>
+          <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
+            7. Quá trình công tác:<br/>
+            {data.workHistory || 'Từ năm........ đến năm........: ..................................................................................\nTừ năm........ đến năm........: ..................................................................................'}
+          </div>
+          
+          <div style={rowStyle}>Chức vụ: Hiện nay: {data.currentPosition || '...........................'}; Chức vụ cao nhất đã qua: {data.highestPastPosition || '...........................'}</div>
           <div style={rowStyle}>Cơ quan công tác hiện nay: {data.currentWorkplace || '.......................................................................'}</div>
+          <div style={rowStyle}>Địa chỉ cơ quan: {data.workplaceAddress || '.......................................................................'}</div>
+          <div style={rowStyle}>Điện thoại cơ quan: {data.workplacePhone || '.......................................................................'}</div>
+          <div style={rowStyle}>Thỉnh giảng tại cơ sở giáo dục đại học (nếu có): {data.visitingSchool || '.......................................................................'}</div>
+          <div style={rowStyle}>8. Đã nghỉ hưu từ tháng {data.retiredDate || '........ năm ........'}</div>
+          <div style={rowStyle}>Nơi làm việc sau khi nghỉ hưu (nếu có): {data.postRetirementWorkplace || '.......................................................................'}</div>
+          <div style={rowStyle}>Tên cơ sở giáo dục đại học nơi hợp đồng thỉnh giảng 3 năm cuối: {data.recentVisitingSchool || '........................................................'}</div>
           
           <div style={{ marginTop: '1rem', lineHeight: '1.5' }}>
-            8. Học vị:<br/>
+            9. Học vị:<br/>
             - Bằng ĐH: {data.bachelorInfo || '.......................................................................'}<br/>
             - Bằng ThS: {data.masterInfo || '.......................................................................'}<br/>
             - Bằng TS: {data.doctorInfo || '.......................................................................'}
           </div>
 
-          <div style={rowStyle}>9. Ngoại ngữ: {data.foreignLanguage || '.......................................................................'}</div>
+          <div style={rowStyle}>10. Ngoại ngữ: {data.foreignLanguage || '.......................................................................'}</div>
           <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-            10. Các hướng nghiên cứu chủ yếu:<br/>
+            11. Các hướng nghiên cứu chủ yếu:<br/>
             {data.researchDirections || '.......................................................................................................\n.......................................................................................................'}
           </div>
 

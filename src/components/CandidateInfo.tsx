@@ -13,10 +13,24 @@ export interface CandidateData {
   permanentAddress?: string;
   contactAddress?: string;
   phoneMobile?: string;
+  phoneHome?: string;
   email?: string;
+  
+  registrationType?: 'Giảng viên' | 'Giảng viên thỉnh giảng';
+  isPartyMember?: boolean;
+
+  // Academic & Work History
   workHistory?: string;
   currentPosition?: string;
+  highestPastPosition?: string;
   currentWorkplace?: string;
+  workplaceAddress?: string;
+  workplacePhone?: string;
+  visitingSchool?: string;
+  retiredDate?: string;
+  postRetirementWorkplace?: string;
+  recentVisitingSchool?: string;
+
   bachelorInfo?: string;
   masterInfo?: string;
   doctorInfo?: string;
