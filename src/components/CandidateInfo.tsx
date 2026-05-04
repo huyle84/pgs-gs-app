@@ -45,6 +45,44 @@ export interface CandidateData {
   researchDirections?: string;
   foreignLanguage?: string;
   englishCertificate?: string;
+
+  // Section B: Teaching Standards
+  selfAssessment?: string;
+  teachingYearsTotal?: string;
+  teachingRecords?: TeachingRecord[];
+  
+  // Foreign Language details
+  flTrainedAbroad?: boolean;
+  flAbroadLevel?: string;
+  flAbroadCountry?: string;
+  flAbroadFrom?: string;
+  flAbroadTo?: string;
+  flDefenseAbroad?: string;
+  flTrainedDomestic?: boolean;
+  flDomesticDegree?: string;
+  flDomesticNumber?: string;
+  flDomesticYear?: string;
+  flTeachingForeign?: boolean;
+  flTeachingDetails?: string;
+  flTeachingPlace?: string;
+  flOther?: boolean;
+  flOtherDetails?: string;
+  flEnglishCert?: string;
+
+  // PhD & Masters Guidance
+  guidanceDetails?: string;
+}
+
+export interface TeachingRecord {
+  id: string;
+  academicYear: string;
+  ncsMain: string;
+  ncsSub: string;
+  masterThesis: string;
+  undergradProject: string;
+  teachingUG: string;
+  teachingPG: string;
+  totalHours: string;
 }
 
 interface Props {
