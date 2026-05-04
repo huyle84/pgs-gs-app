@@ -154,9 +154,90 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
             {data.researchDirections || '.......................................................................................................\n.......................................................................................................'}
           </div>
 
-          {/* Section B */}
-          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>B. KẾT QUẢ ĐÀO TẠO VÀ NGHIÊN CỨU KHOA HỌC</div>
-          <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>1. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)</div>
+          {/* Section B: TỰ KHAI THEO TIÊU CHUẨN */}
+          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>B. TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH GIÁO SƯ/PHÓ GIÁO SƯ</div>
+          
+          <div style={rowStyle}>1. Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá).</div>
+          <div style={{ ...rowStyle, whiteSpace: 'pre-wrap', marginLeft: '1rem' }}>{data.selfAssessment || '.......................................................................................................'}</div>
+
+          <div style={{ ...rowStyle, marginTop: '1rem' }}>2. Thời gian tham gia đào tạo, bồi dưỡng từ trình độ đại học trở lên:</div>
+          <div style={rowStyle}>Tổng số: {data.teachingYearsTotal || '...............'} năm.</div>
+          
+          {/* Teaching Records Table */}
+          {data.teachingRecords && data.teachingRecords.length > 0 && (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', marginTop: '0.5rem', fontSize: '11pt' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle} rowSpan={2}>TT</th>
+                  <th style={thStyle} rowSpan={2}>Năm học</th>
+                  <th style={thStyle} colSpan={2}>Hướng dẫn NCS</th>
+                  <th style={thStyle} rowSpan={2}>HD luận văn ThS</th>
+                  <th style={thStyle} rowSpan={2}>HD đồ án, khóa luận tốt nghiệp ĐH</th>
+                  <th style={thStyle} colSpan={2}>Giảng dạy</th>
+                  <th style={thStyle} rowSpan={2}>Tổng số giờ giảng/số giờ quy đổi</th>
+                </tr>
+                <tr>
+                  <th style={thStyle}>Chính</th>
+                  <th style={thStyle}>Phụ</th>
+                  <th style={thStyle}>ĐH</th>
+                  <th style={thStyle}>SĐH</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.teachingRecords.map((rec, idx) => (
+                  <tr key={rec.id}>
+                    <td style={tdStyle}>{idx + 1}</td>
+                    <td style={tdStyle}>{rec.academicYear}</td>
+                    <td style={tdStyle}>{rec.ncsMain}</td>
+                    <td style={tdStyle}>{rec.ncsSub}</td>
+                    <td style={tdStyle}>{rec.masterThesis}</td>
+                    <td style={tdStyle}>{rec.undergradProject}</td>
+                    <td style={tdStyle}>{rec.teachingUG}</td>
+                    <td style={tdStyle}>{rec.teachingPG}</td>
+                    <td style={tdStyle}>{rec.totalHours}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* 3. Foreign Language */}
+          <div style={{ ...rowStyle, marginTop: '1rem' }}>3. Ngoại ngữ:</div>
+          <div style={rowStyle}>3.1. Ngoại ngữ thành thạo phục vụ chuyên môn: {data.foreignLanguage || '.......................................................................'}</div>
+          
+          <div style={{ marginLeft: '1rem' }}>
+            <div style={rowStyle}>a) Được đào tạo ở nước ngoài: {data.flTrainedAbroad ? '☑' : '☐'}</div>
+            {data.flTrainedAbroad && (
+              <div style={{ marginLeft: '1rem' }}>
+                <div style={rowStyle}>- Học {data.flAbroadLevel || '..........'}; Tại nước: {data.flAbroadCountry || '..........'}; Từ năm {data.flAbroadFrom || '...........'} đến năm {data.flAbroadTo || '...........'}</div>
+                <div style={rowStyle}>- Bảo vệ luận văn ThS ☐ hoặc luận án TS ☐ hoặc TSKH ☐; {data.flDefenseAbroad || 'Tại nước:.....; năm......'}</div>
+              </div>
+            )}
+            <div style={rowStyle}>b) Được đào tạo ngoại ngữ trong nước: {data.flTrainedDomestic ? '☑' : '☐'}</div>
+            {data.flTrainedDomestic && (
+              <div style={{ marginLeft: '1rem' }}>
+                <div style={rowStyle}>- Trường ĐH cấp bằng tốt nghiệp ĐH ngoại ngữ: {data.flDomesticDegree || '.......................................................................'}</div>
+              </div>
+            )}
+            <div style={rowStyle}>c) Giảng dạy bằng tiếng nước ngoài: {data.flTeachingForeign ? '☑' : '☐'}</div>
+            {data.flTeachingForeign && (
+              <div style={{ marginLeft: '1rem' }}>
+                <div style={rowStyle}>- Giảng dạy bằng ngoại ngữ: {data.flTeachingDetails || '.......................................................................'}</div>
+                <div style={rowStyle}>- Nơi giảng dạy (cơ sở đào tạo, nước): {data.flTeachingPlace || '.......................................................................'}</div>
+              </div>
+            )}
+            <div style={rowStyle}>d) Đối tượng khác: {data.flOther ? '☑' : '☐'}{data.flOther && data.flOtherDetails ? `; Diễn giải: ${data.flOtherDetails}` : ''}</div>
+          </div>
+          <div style={{ ...rowStyle, marginTop: '0.5rem' }}>3.2. Tiếng Anh (văn bằng, chứng chỉ): {data.flEnglishCert || '.......................................................................'}</div>
+
+          {/* 4. Guidance */}
+          <div style={{ ...rowStyle, marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
+            4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng):<br/>
+            {data.guidanceDetails || '.......................................................................................................\n.......................................................................................................'}
+          </div>
+
+          {/* Scientific Works Section */}
+          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>5. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)</div>
           
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: Trước khi bảo vệ TS (đối với PGS) / Trước khi nhận PGS (đối với GS)</div>
           {renderWorksTable(worksBefore)}

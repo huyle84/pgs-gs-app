@@ -160,12 +160,77 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
         new Paragraph({ children: [new TextRun({ text: `10. Ngoại ngữ: ${data.foreignLanguage || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `11. Các hướng nghiên cứu chủ yếu:\n${data.researchDirections || '.......................................................................\n.......................................................................'}`, font: "Times New Roman", size: 28 })] }),
         
-        // B. KẾT QUẢ ĐÀO TẠO VÀ NGHIÊN CỨU
+        // B. TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH
         new Paragraph({
-          children: [new TextRun({ text: "B. KẾT QUẢ ĐÀO TẠO VÀ NGHIÊN CỨU KHOA HỌC", bold: true, font: "Times New Roman", size: 28 })],
+          children: [new TextRun({ text: "B. TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH GIÁO SƯ/PHÓ GIÁO SƯ", bold: true, font: "Times New Roman", size: 28 })],
           spacing: { before: 400, after: 200 }
         }),
-        new Paragraph({ children: [new TextRun({ text: `1. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)`, bold: true, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `1. Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá).`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: data.selfAssessment || '.......................................................................................................', font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `2. Thời gian tham gia đào tạo, bồi dưỡng từ trình độ đại học trở lên:`, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: `Tổng số: ${data.teachingYearsTotal || '...............'} năm.`, font: "Times New Roman", size: 28 })] }),
+
+        // Teaching Records Table
+        ...(data.teachingRecords && data.teachingRecords.length > 0 ? [
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new TableRow({
+                children: [
+                  createCell("TT", true),
+                  createCell("Năm học", true),
+                  createCell("HD NCS Chính", true),
+                  createCell("HD NCS Phụ", true),
+                  createCell("HD LV ThS", true),
+                  createCell("HD ĐA/KL TN ĐH", true),
+                  createCell("GD ĐH", true),
+                  createCell("GD SĐH", true),
+                  createCell("Tổng giờ", true),
+                ],
+              }),
+              ...data.teachingRecords.map((rec, idx) => new TableRow({
+                children: [
+                  createCell((idx + 1).toString()),
+                  createCell(rec.academicYear),
+                  createCell(rec.ncsMain),
+                  createCell(rec.ncsSub),
+                  createCell(rec.masterThesis),
+                  createCell(rec.undergradProject),
+                  createCell(rec.teachingUG),
+                  createCell(rec.teachingPG),
+                  createCell(rec.totalHours),
+                ],
+              })),
+            ],
+          }),
+        ] : []),
+
+        // 3. Foreign Language
+        new Paragraph({ children: [new TextRun({ text: `3. Ngoại ngữ:`, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: `3.1. Ngoại ngữ thành thạo phục vụ chuyên môn: ${data.foreignLanguage || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `a) Được đào tạo ở nước ngoài: ${data.flTrainedAbroad ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        ...(data.flTrainedAbroad ? [
+          new Paragraph({ children: [new TextRun({ text: `- Học ${data.flAbroadLevel || '..........'}; Tại nước: ${data.flAbroadCountry || '..........'}; Từ năm ${data.flAbroadFrom || '...........'} đến năm ${data.flAbroadTo || '...........'}`, font: "Times New Roman", size: 28 })], indent: { left: 360 } }),
+          new Paragraph({ children: [new TextRun({ text: `- Bảo vệ luận văn ThS ☐ hoặc luận án TS ☐ hoặc TSKH ☐; ${data.flDefenseAbroad || 'Tại nước:.....; năm......'}`, font: "Times New Roman", size: 28 })], indent: { left: 360 } }),
+        ] : []),
+        new Paragraph({ children: [new TextRun({ text: `b) Được đào tạo ngoại ngữ trong nước: ${data.flTrainedDomestic ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        ...(data.flTrainedDomestic ? [
+          new Paragraph({ children: [new TextRun({ text: `- Trường ĐH cấp bằng tốt nghiệp ĐH ngoại ngữ: ${data.flDomesticDegree || '......................................................'}`, font: "Times New Roman", size: 28 })], indent: { left: 360 } }),
+        ] : []),
+        new Paragraph({ children: [new TextRun({ text: `c) Giảng dạy bằng tiếng nước ngoài: ${data.flTeachingForeign ? '☑' : '☐'}`, font: "Times New Roman", size: 28 })] }),
+        ...(data.flTeachingForeign ? [
+          new Paragraph({ children: [new TextRun({ text: `- Giảng dạy bằng ngoại ngữ: ${data.flTeachingDetails || '......................................................'}`, font: "Times New Roman", size: 28 })], indent: { left: 360 } }),
+          new Paragraph({ children: [new TextRun({ text: `- Nơi giảng dạy (cơ sở đào tạo, nước): ${data.flTeachingPlace || '......................................................'}`, font: "Times New Roman", size: 28 })], indent: { left: 360 } }),
+        ] : []),
+        new Paragraph({ children: [new TextRun({ text: `d) Đối tượng khác: ${data.flOther ? '☑' : '☐'}${data.flOther && data.flOtherDetails ? `; Diễn giải: ${data.flOtherDetails}` : ''}`, font: "Times New Roman", size: 28 })] }),
+        new Paragraph({ children: [new TextRun({ text: `3.2. Tiếng Anh (văn bằng, chứng chỉ): ${data.flEnglishCert || '......................................................'}`, font: "Times New Roman", size: 28 })], spacing: { before: 100 } }),
+
+        // 4. Guidance
+        new Paragraph({ children: [new TextRun({ text: `4. Hướng dẫn thành công NCS làm luận án TS và học viên làm luận văn ThS (đã được cấp bằng/có quyết định cấp bằng):`, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: data.guidanceDetails || '.......................................................................\\n.......................................................................', font: "Times New Roman", size: 28 })] }),
+
+        // 5. Scientific Works
+        new Paragraph({ children: [new TextRun({ text: `5. Các công trình khoa học (Bài báo, Bằng độc quyền sáng chế, Sách...)`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
         
         new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: Trước khi bảo vệ TS (đối với PGS) / Trước khi nhận PGS (đối với GS)`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksBefore),
