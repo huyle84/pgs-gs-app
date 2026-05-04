@@ -26,6 +26,15 @@ export interface CandidateData {
   researchDirections?: string;
   foreignLanguage?: string;
   englishCertificate?: string;
+  
+  isLecturer?: boolean;
+  isVisitingLecturer?: boolean;
+  isPartyMember?: boolean;
+  
+  workHistories?: { fromYear: string; toYear: string; position: string; workplace: string }[];
+  supervisions?: { name: string; type: 'NCS' | 'ThS'; role: 'Chính' | 'Phụ'; period: string; institution: string; graduationYear: string }[];
+  projects?: { name: string; role: string; codeAndLevel: string; executionTime: string; acceptanceDate: string }[];
+  teachingHours?: { year: string; phdHours: string; masterHours: string; bachelorHours: string; totalHours: string }[];
 }
 
 interface Props {
