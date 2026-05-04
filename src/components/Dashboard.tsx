@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
-import { collection, query, getDocs, addDoc, deleteDoc, doc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, getDoc, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 interface DashboardProps {
   onSelectForm: (formId: string) => void;
@@ -23,17 +23,51 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectForm }) => {
   }, [currentUser]);
 
   const fetchForms = async () => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
+    
     try {
-      const q = query(collection(db, `users/${currentUser.uid}/forms`), orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
-      const formList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as FormMeta[];
+      // Đầu tiên, kiểm tra xem có dữ liệu cũ chưa migrate không
+      const oldDocRef = doc(db, 'users', currentUser.uid);
+      const formsSnapshot = await getDocs(query(collection(db, `users/${currentUser.uid}/forms`)));
+      let formList = formsSnapshot.docs.map(d => ({ id: d.id, ...d.data() })) as FormMeta[];
+      
+      if (formList.length === 0) {
+        // Thử lấy dữ liệu cũ để migrate
+        try {
+          const oldDocSnap = await getDoc(oldDocRef);
+          if (oldDocSnap.exists()) {
+            const oldData = oldDocSnap.data();
+            if (oldData.candidateData || oldData.works) {
+              const newFormRef = await addDoc(collection(db, `users/${currentUser.uid}/forms`), {
+                title: 'Hồ sơ Cũ (Tự động chuyển)',
+                createdAt: serverTimestamp(),
+                candidateData: oldData.candidateData || {},
+                works: oldData.works || []
+              });
+              formList.push({ id: newFormRef.id, title: 'Hồ sơ Cũ (Tự động chuyển)', createdAt: { toMillis: () => Date.now() } });
+              // Xóa dữ liệu cũ để không migrate lại
+              await deleteDoc(oldDocRef);
+            }
+          }
+        } catch (e) {
+          console.error("Migration error", e);
+        }
+      }
+      
+      // Sắp xếp local thay vì dùng orderBy của Firestore để tránh lỗi Index
+      formList.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return timeB - timeA;
+      });
+
       setForms(formList);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching forms:', error);
+      alert('Lỗi tải dữ liệu: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -52,9 +86,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectForm }) => {
         works: []
       });
       onSelectForm(newFormRef.id);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating form:', error);
-      alert('Không thể tạo hồ sơ mới.');
+      alert('Không thể tạo hồ sơ mới: ' + error.message);
       setLoading(false);
     }
   };
