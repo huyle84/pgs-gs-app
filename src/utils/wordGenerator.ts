@@ -38,7 +38,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
   // Merge Tab 1 data
   const bookTypesMap: Record<string, string> = { specializedBook: 'CK', textBook: 'GT', referenceBook: 'TK', guideBook: 'HD' };
   const bookTypesList = ['specializedBook', 'textBook', 'referenceBook', 'guideBook'];
-  const articleTypesList = ['articleISI', 'articleISSNOnline', 'articleISSNOffline'];
+  const articleTypesList = ['articleISI', 'articleISSNOnline', 'articleISSNOffline', 'nationalConference', 'internationalConference'];
   
   const mergedBooksBefore = [
     ...works.filter(w => bookTypesList.includes(w.type) && w.stage === 'BEFORE').map(w => ({
@@ -69,6 +69,18 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
       citations: w.citations||'', volumeIssue: w.volume||'', pages: w.pages||'', publishYear: w.publishYear||'',
     })),
     ...(data.articlesAfter || []),
+  ];
+  const mergedPatents = [
+    ...works.filter(w => ['patent', 'usefulSolution'].includes(w.type)).map(w => ({
+      id: 't1_'+w.id, name: w.title, issuingOrg: w.journalName||'', issueDate: w.publishYear||'', totalAuthors: w.totalAuthors.toString(),
+    })),
+    ...(data.patents || []),
+  ];
+  const mergedAwards = [
+    ...works.filter(w => ['nationalArtAward', 'internationalArtAward'].includes(w.type)).map(w => ({
+      id: 't1_'+w.id, name: w.title, organization: w.journalName||'', decisionInfo: w.publishYear||'', totalAuthors: w.totalAuthors.toString(),
+    })),
+    ...(data.awards || []),
   ];
 
   const doc = new Document({
@@ -303,22 +315,22 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
 
         // 7.2 Patents
         new Paragraph({ children: [new TextRun({ text: `7.2. Bằng độc quyền sáng chế, giải pháp hữu ích`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
-        ...(data.patents && data.patents.length > 0 ? [
+        ...(mergedPatents.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
               new TableRow({ children: [createCell("TT", true), createCell("Tên bằng ĐQSC/GPHỮ", true), createCell("Cơ quan cấp", true), createCell("Ngày cấp", true), createCell("Số TG", true)] }),
-              ...data.patents.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.issuingOrg), createCell(r.issueDate), createCell(r.totalAuthors)] })),
+              ...mergedPatents.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.issuingOrg), createCell(r.issueDate), createCell(r.totalAuthors)] })),
             ]
           }),
         ] : [new Paragraph({ children: [new TextRun({ text: "(Không có)", italics: true, font: "Times New Roman", size: 28 })] })]),
 
         // 7.3 Awards
         new Paragraph({ children: [new TextRun({ text: `7.3. Giải thưởng quốc gia, quốc tế`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
-        ...(data.awards && data.awards.length > 0 ? [
+        ...(mergedAwards.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
               new TableRow({ children: [createCell("TT", true), createCell("Tên giải thưởng", true), createCell("CQ/TC ra QĐ", true), createCell("Số QĐ, ngày", true), createCell("Số TG", true)] }),
-              ...data.awards.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.organization), createTextCell(r.decisionInfo), createCell(r.totalAuthors)] })),
+              ...mergedAwards.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.organization), createTextCell(r.decisionInfo), createCell(r.totalAuthors)] })),
             ]
           }),
         ] : [new Paragraph({ children: [new TextRun({ text: "(Không có)", italics: true, font: "Times New Roman", size: 28 })] })]),

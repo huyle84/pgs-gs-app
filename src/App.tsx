@@ -225,7 +225,6 @@ function MainApp() {
             <Mau01Preview 
               data={candidateData}
               works={works}
-              summary={summary}
               onClose={() => setShowPreview(false)}
               onExportWord={() => generateDocx(candidateData, works)}
             />

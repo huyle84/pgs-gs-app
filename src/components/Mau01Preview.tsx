@@ -1,21 +1,20 @@
 import React, { useMemo } from 'react';
 import type { CandidateData, BookRecord, ArticleRecord } from './CandidateInfo';
-import type { ScientificWork, ScoreSummary } from '../utils/calculator';
+import type { ScientificWork } from '../utils/calculator';
 
 
 interface Props {
   data: CandidateData;
   works: ScientificWork[];
-  summary: ScoreSummary;
   onClose: () => void;
   onExportWord: () => void;
 }
 
 const bookTypes = ['specializedBook', 'textBook', 'referenceBook', 'guideBook'];
 const bookTypeMap: Record<string, string> = { specializedBook: 'CK', textBook: 'GT', referenceBook: 'TK', guideBook: 'HD' };
-const articleTypes = ['articleISI', 'articleISSNOnline', 'articleISSNOffline'];
+const articleTypes = ['articleISI', 'articleISSNOnline', 'articleISSNOffline', 'nationalConference', 'internationalConference'];
 
-export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, onExportWord }) => {
+export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWord }) => {
   // Merge Tab 1 books into Mục 5
   const mergedBooksBefore = useMemo<BookRecord[]>(() => {
     const fromTab1 = works.filter(w => bookTypes.includes(w.type) && w.stage === 'BEFORE').map(w => ({
@@ -51,6 +50,22 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
     }));
     return [...fromTab1, ...(data.articlesAfter || [])];
   }, [works, data.articlesAfter]);
+
+  // Merge Tab 1 patents into Mục 7.2
+  const mergedPatents = useMemo(() => {
+    const fromTab1 = works.filter(w => ['patent', 'usefulSolution'].includes(w.type)).map(w => ({
+      id: `t1_${w.id}`, name: w.title, issuingOrg: w.journalName || '', issueDate: w.publishYear || '', totalAuthors: w.totalAuthors.toString(),
+    }));
+    return [...fromTab1, ...(data.patents || [])];
+  }, [works, data.patents]);
+
+  // Merge Tab 1 awards into Mục 7.3
+  const mergedAwards = useMemo(() => {
+    const fromTab1 = works.filter(w => ['nationalArtAward', 'internationalArtAward'].includes(w.type)).map(w => ({
+      id: `t1_${w.id}`, name: w.title, organization: w.journalName || '', decisionInfo: w.publishYear || '', totalAuthors: w.totalAuthors.toString(),
+    }));
+    return [...fromTab1, ...(data.awards || [])];
+  }, [works, data.awards]);
 
   return (
     <div style={overlayStyle}>
@@ -366,19 +381,19 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
 
           {/* 7.2 Patents */}
           <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.2. Bằng độc quyền sáng chế, giải pháp hữu ích</div>
-          {data.patents && data.patents.length > 0 ? (
+          {mergedPatents && mergedPatents.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '11pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bằng ĐQ sáng chế, GPHỮ</th><th style={thStyle}>Cơ quan cấp</th><th style={thStyle}>Ngày cấp</th><th style={thStyle}>Số TG</th></tr></thead>
-              <tbody>{data.patents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+              <tbody>{mergedPatents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có)</div>)}
 
           {/* 7.3 Awards */}
           <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.3. Giải thưởng quốc gia, quốc tế</div>
-          {data.awards && data.awards.length > 0 ? (
+          {mergedAwards && mergedAwards.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên giải thưởng</th><th style={thStyle}>Cơ quan/TC ra QĐ</th><th style={thStyle}>Số QĐ, ngày</th><th style={thStyle}>Số TG</th></tr></thead>
-              <tbody>{data.awards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+              <tbody>{mergedAwards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có)</div>)}
 
