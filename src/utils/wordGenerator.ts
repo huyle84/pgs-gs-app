@@ -257,12 +257,57 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
           ]}),
         ] : [new Paragraph({ children: [new TextRun({ text: "(Không có sách)", italics: true, font: "Times New Roman", size: 28 })] })]),
 
-        // 6. Scientific Works
-        new Paragraph({ children: [new TextRun({ text: `6. Bài báo khoa học đã công bố`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        // 8. Tổng hợp công trình tính điểm (từ Tab 1)
+        new Paragraph({ children: [new TextRun({ text: `8. Tổng hợp công trình khoa học (tính điểm)`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
         new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: ${data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksBefore),
         new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: ${data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
         createWorksTable(worksAfter),
+
+        // 6. Science Projects
+        new Paragraph({ children: [new TextRun({ text: `6. Thực hiện nhiệm vụ khoa học và công nghệ đã nghiệm thu`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        ...(data.scienceProjects && data.scienceProjects.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên nhiệm vụ KHCN", true), createCell("CN/PCN/TK", true), createCell("Mã số, cấp QL", true), createCell("TG thực hiện", true), createCell("TG nghiệm thu", true)] }),
+            ...data.scienceProjects.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.name), createCell(r.role), createTextCell(r.codeAndLevel), createCell(r.implementPeriod), createCell(r.acceptanceDate)] })),
+          ]}),
+        ] : []),
+
+        // 7. Research Results
+        new Paragraph({ children: [new TextRun({ text: `7. Kết quả nghiên cứu khoa học và công nghệ đã công bố`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: `7.1. Bài báo khoa học đã công bố`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: ${data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 100 } }),
+        ...(data.articlesBefore && data.articlesBefore.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số TG", true), createCell("TC/Kỷ yếu", true), createCell("TC QT (IF)", true), createCell("Trích dẫn", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm", true)] }),
+            ...data.articlesBefore.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.title), createCell(r.totalAuthors), createTextCell(r.journalName), createCell(r.intlJournal), createCell(r.citations), createCell(r.volumeIssue), createCell(r.pages), createCell(r.publishYear)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có bài báo)", italics: true, font: "Times New Roman", size: 28 })] })]),
+        new Paragraph({ children: [new TextRun({ text: `Giai đoạn 2: ${data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        ...(data.articlesAfter && data.articlesAfter.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số TG", true), createCell("TC/Kỷ yếu", true), createCell("TC QT (IF)", true), createCell("Trích dẫn", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm", true)] }),
+            ...data.articlesAfter.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.title), createCell(r.totalAuthors), createTextCell(r.journalName), createCell(r.intlJournal), createCell(r.citations), createCell(r.volumeIssue), createCell(r.pages), createCell(r.publishYear)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có bài báo)", italics: true, font: "Times New Roman", size: 28 })] })]),
+
+        // 7.2 Patents
+        new Paragraph({ children: [new TextRun({ text: `7.2. Bằng độc quyền sáng chế, giải pháp hữu ích`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        ...(data.patents && data.patents.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên bằng ĐQSC/GPHỮ", true), createCell("Cơ quan cấp", true), createCell("Ngày cấp", true), createCell("Số TG", true)] }),
+            ...data.patents.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.name), createTextCell(r.issuingOrg), createCell(r.issueDate), createCell(r.totalAuthors)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có)", italics: true, font: "Times New Roman", size: 28 })] })]),
+
+        // 7.3 Awards
+        new Paragraph({ children: [new TextRun({ text: `7.3. Giải thưởng quốc gia, quốc tế`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 200 } }),
+        ...(data.awards && data.awards.length > 0 ? [
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+            new TableRow({ children: [createCell("TT", true), createCell("Tên giải thưởng", true), createCell("CQ/TC ra QĐ", true), createCell("Số QĐ, ngày", true), createCell("Số TG", true)] }),
+            ...data.awards.map((r, i) => new TableRow({ children: [createCell((i+1).toString()), createTextCell(r.name), createTextCell(r.organization), createTextCell(r.decisionInfo), createCell(r.totalAuthors)] })),
+          ]}),
+        ] : [new Paragraph({ children: [new TextRun({ text: "(Không có)", italics: true, font: "Times New Roman", size: 28 })] })]),
 
         // TỔNG HỢP ĐIỂM
         new Paragraph({

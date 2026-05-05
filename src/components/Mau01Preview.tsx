@@ -343,6 +343,51 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
           {renderWorksTable(worksAfter)}
 
+          {/* 6. Science Projects */}
+          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>6. Thực hiện nhiệm vụ khoa học và công nghệ đã nghiệm thu</div>
+          {data.scienceProjects && data.scienceProjects.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên nhiệm vụ KHCN</th><th style={thStyle}>CN/PCN/TK</th><th style={thStyle}>Mã số và cấp QL</th><th style={thStyle}>Thời gian TH</th><th style={thStyle}>Thời gian NT</th></tr></thead>
+              <tbody>{data.scienceProjects.map((rec, idx) => (<tr key={rec.id}><td style={tdStyle}>{idx+1}</td><td style={tdStyle}>{rec.name}</td><td style={tdStyle}>{rec.role}</td><td style={tdStyle}>{rec.codeAndLevel}</td><td style={tdStyle}>{rec.implementPeriod}</td><td style={tdStyle}>{rec.acceptanceDate}</td></tr>))}</tbody>
+            </table>
+          ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Chưa có thông tin)</div>)}
+
+          {/* 7. Research Results */}
+          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>7. Kết quả nghiên cứu khoa học và công nghệ đã công bố</div>
+          <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.1. Bài báo khoa học đã công bố</div>
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
+          {data.articlesBefore && data.articlesBefore.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
+              <tbody>{data.articlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+            </table>
+          ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có bài báo)</div>)}
+          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
+          {data.articlesAfter && data.articlesAfter.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
+              <tbody>{data.articlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+            </table>
+          ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có bài báo)</div>)}
+
+          {/* 7.2 Patents */}
+          <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.2. Bằng độc quyền sáng chế, giải pháp hữu ích</div>
+          {data.patents && data.patents.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '11pt' }}>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bằng ĐQ sáng chế, GPHỮ</th><th style={thStyle}>Cơ quan cấp</th><th style={thStyle}>Ngày cấp</th><th style={thStyle}>Số TG</th></tr></thead>
+              <tbody>{data.patents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+            </table>
+          ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có)</div>)}
+
+          {/* 7.3 Awards */}
+          <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.3. Giải thưởng quốc gia, quốc tế</div>
+          {data.awards && data.awards.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên giải thưởng</th><th style={thStyle}>Cơ quan/TC ra QĐ</th><th style={thStyle}>Số QĐ, ngày</th><th style={thStyle}>Số TG</th></tr></thead>
+              <tbody>{data.awards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+            </table>
+          ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có)</div>)}
+
           {/* Score Summary */}
           <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>TỔNG HỢP ĐIỂM QUY ĐỔI</div>
           <div>- Tổng điểm quy đổi công trình khoa học: <strong>{summary.totalPoints.toFixed(2)}</strong> điểm</div>

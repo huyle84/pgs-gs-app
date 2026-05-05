@@ -77,6 +77,15 @@ export interface CandidateData {
   booksBefore?: BookRecord[];
   booksAfter?: BookRecord[];
 
+  // 6. Science & Technology Projects
+  scienceProjects?: ScienceProjectRecord[];
+
+  // 7. Research Results
+  articlesBefore?: ArticleRecord[];
+  articlesAfter?: ArticleRecord[];
+  patents?: PatentRecord[];
+  awards?: AwardRecord[];
+
   // Section 9: Missing standards replaced by international papers
   missingTimeRequirement?: boolean;
   missingTeachingHours?: boolean;
@@ -120,6 +129,43 @@ export interface BookRecord {
   totalAuthors: string;
   writingRole: string; // MM, CB, phản biện soạn trang...
   confirmation: string;
+}
+
+export interface ScienceProjectRecord {
+  id: string;
+  name: string;
+  role: string; // CN, PCN, TK
+  codeAndLevel: string;
+  implementPeriod: string;
+  acceptanceDate: string;
+}
+
+export interface ArticleRecord {
+  id: string;
+  title: string;
+  totalAuthors: string;
+  journalName: string;
+  intlJournal: string; // IF info
+  citations: string;
+  volumeIssue: string;
+  pages: string;
+  publishYear: string;
+}
+
+export interface PatentRecord {
+  id: string;
+  name: string;
+  issuingOrg: string;
+  issueDate: string;
+  totalAuthors: string;
+}
+
+export interface AwardRecord {
+  id: string;
+  name: string;
+  organization: string;
+  decisionInfo: string;
+  totalAuthors: string;
 }
 
 interface Props {
