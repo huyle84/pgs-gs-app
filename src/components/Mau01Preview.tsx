@@ -1,5 +1,5 @@
-import React from 'react';
-import type { CandidateData } from './CandidateInfo';
+import React, { useMemo } from 'react';
+import type { CandidateData, BookRecord, ArticleRecord } from './CandidateInfo';
 import type { ScientificWork, ScoreSummary } from '../utils/calculator';
 
 
@@ -11,48 +11,46 @@ interface Props {
   onExportWord: () => void;
 }
 
-export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, onExportWord }) => {
-  const worksBefore = works.filter(w => w.stage === 'BEFORE');
-  const worksAfter = works.filter(w => w.stage === 'AFTER');
+const bookTypes = ['specializedBook', 'textBook', 'referenceBook', 'guideBook'];
+const bookTypeMap: Record<string, string> = { specializedBook: 'CK', textBook: 'GT', referenceBook: 'TK', guideBook: 'HD' };
+const articleTypes = ['articleISI', 'articleISSNOnline', 'articleISSNOffline'];
 
-  const renderWorksTable = (workList: ScientificWork[]) => (
-    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '13px' }}>
-      <thead>
-        <tr>
-          <th style={thStyle}>TT</th>
-          <th style={thStyle}>Tên bài báo, Sách, Công trình...</th>
-          <th style={thStyle}>Tạp chí / Kỷ yếu, NXB</th>
-          <th style={thStyle}>Số T.giả</th>
-          <th style={thStyle}>Điểm</th>
-          <th style={thStyle}>Ghi chú</th>
-        </tr>
-      </thead>
-      <tbody>
-        {workList.map((w, i) => (
-          <tr key={w.id}>
-            <td style={tdStyle}>{i + 1}</td>
-            <td style={tdStyle}>{w.title}</td>
-            <td style={tdStyle}>
-              {w.journalName && <div>{w.journalName}</div>}
-              {w.volume && <span>Tập {w.volume}, </span>}
-              {w.pages && <span>Trang {w.pages}, </span>}
-              {w.publishYear && <span>Năm {w.publishYear}</span>}
-              {w.impactFactor && <div style={{ color: 'red' }}>IF: {w.impactFactor}</div>}
-              {w.conferenceRank && <div style={{ color: 'blue' }}>Rank: {w.conferenceRank}</div>}
-            </td>
-            <td style={tdStyle}>{w.totalAuthors}</td>
-            <td style={tdStyle}>{w.baseScore}</td>
-            <td style={tdStyle}>{w.isRecent ? '3 năm cuối' : ''}</td>
-          </tr>
-        ))}
-        {workList.length === 0 && (
-          <tr>
-            <td colSpan={6} style={{ ...tdStyle, textAlign: 'center', fontStyle: 'italic' }}>Không có công trình nào.</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  );
+export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, onExportWord }) => {
+  // Merge Tab 1 books into Mục 5
+  const mergedBooksBefore = useMemo<BookRecord[]>(() => {
+    const fromTab1 = works.filter(w => bookTypes.includes(w.type) && w.stage === 'BEFORE').map(w => ({
+      id: `t1_${w.id}`, title: w.title, bookType: bookTypeMap[w.type] || '', publisher: w.journalName || '',
+      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor ? 'CB' : '', confirmation: '',
+    }));
+    return [...fromTab1, ...(data.booksBefore || [])];
+  }, [works, data.booksBefore]);
+
+  const mergedBooksAfter = useMemo<BookRecord[]>(() => {
+    const fromTab1 = works.filter(w => bookTypes.includes(w.type) && w.stage === 'AFTER').map(w => ({
+      id: `t1_${w.id}`, title: w.title, bookType: bookTypeMap[w.type] || '', publisher: w.journalName || '',
+      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor ? 'CB' : '', confirmation: '',
+    }));
+    return [...fromTab1, ...(data.booksAfter || [])];
+  }, [works, data.booksAfter]);
+
+  // Merge Tab 1 articles into Mục 7.1
+  const mergedArticlesBefore = useMemo<ArticleRecord[]>(() => {
+    const fromTab1 = works.filter(w => articleTypes.includes(w.type) && w.stage === 'BEFORE').map(w => ({
+      id: `t1_${w.id}`, title: w.title, totalAuthors: w.totalAuthors.toString(),
+      journalName: w.journalName || '', intlJournal: w.impactFactor ? `IF=${w.impactFactor}` : '',
+      citations: w.citations || '', volumeIssue: w.volume || '', pages: w.pages || '', publishYear: w.publishYear || '',
+    }));
+    return [...fromTab1, ...(data.articlesBefore || [])];
+  }, [works, data.articlesBefore]);
+
+  const mergedArticlesAfter = useMemo<ArticleRecord[]>(() => {
+    const fromTab1 = works.filter(w => articleTypes.includes(w.type) && w.stage === 'AFTER').map(w => ({
+      id: `t1_${w.id}`, title: w.title, totalAuthors: w.totalAuthors.toString(),
+      journalName: w.journalName || '', intlJournal: w.impactFactor ? `IF=${w.impactFactor}` : '',
+      citations: w.citations || '', volumeIssue: w.volume || '', pages: w.pages || '', publishYear: w.publishYear || '',
+    }));
+    return [...fromTab1, ...(data.articlesAfter || [])];
+  }, [works, data.articlesAfter]);
 
   return (
     <div style={overlayStyle}>
@@ -127,10 +125,15 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
             E-mail: {data.email || '...........................'}
           </div>
           
-          <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-            7. Quá trình công tác:<br/>
-            {data.workHistory || 'Từ năm........ đến năm........: ..................................................................................\nTừ năm........ đến năm........: ..................................................................................'}
-          </div>
+          <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>7. Quá trình công tác:</div>
+          {data.workHistoryRecords && data.workHistoryRecords.length > 0 ? (
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.5rem', fontSize: '11pt' }}>
+              <thead><tr><th style={thStyle}>Từ năm</th><th style={thStyle}>Đến năm</th><th style={thStyle}>Chức danh, chức vụ</th><th style={thStyle}>Nơi công tác</th></tr></thead>
+              <tbody>{data.workHistoryRecords.map((rec) => (<tr key={rec.id}><td style={tdStyle}>{rec.fromYear}</td><td style={tdStyle}>{rec.toYear}</td><td style={tdStyle}>{rec.position}</td><td style={tdStyle}>{rec.workplace}</td></tr>))}</tbody>
+            </table>
+          ) : (
+            <div style={{ ...rowStyle, whiteSpace: 'pre-wrap' }}>{data.workHistory || 'Từ năm........ đến năm........: ..................................................................................'}</div>
+          )}
           
           <div style={rowStyle}>Chức vụ: Hiện nay: {data.currentPosition || '...........................'}; Chức vụ cao nhất đã qua: {data.highestPastPosition || '...........................'}</div>
           <div style={rowStyle}>Cơ quan công tác hiện nay: {data.currentWorkplace || '.......................................................................'}</div>
@@ -270,7 +273,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
 
           {/* Books Before */}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem', marginTop: '1rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
-          {data.booksBefore && data.booksBefore.length > 0 ? (
+          {mergedBooksBefore.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
               <thead>
                 <tr>
@@ -284,7 +287,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
                 </tr>
               </thead>
               <tbody>
-                {data.booksBefore.map((rec, idx) => (
+                {mergedBooksBefore.map((rec, idx) => (
                   <tr key={rec.id}>
                     <td style={tdStyle}>{idx + 1}</td>
                     <td style={tdStyle}>{rec.title}</td>
@@ -303,7 +306,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
 
           {/* Books After */}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
-          {data.booksAfter && data.booksAfter.length > 0 ? (
+          {mergedBooksAfter.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
               <thead>
                 <tr>
@@ -317,7 +320,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
                 </tr>
               </thead>
               <tbody>
-                {data.booksAfter.map((rec, idx) => (
+                {mergedBooksAfter.map((rec, idx) => (
                   <tr key={rec.id}>
                     <td style={tdStyle}>{idx + 1}</td>
                     <td style={tdStyle}>{rec.title}</td>
@@ -334,15 +337,6 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
             <div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có sách)</div>
           )}
 
-          {/* 6. Scientific Works (was 5, now renumbered) */}
-          <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>6. Bài báo khoa học đã công bố</div>
-          
-          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
-          {renderWorksTable(worksBefore)}
-
-          <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
-          {renderWorksTable(worksAfter)}
-
           {/* 6. Science Projects */}
           <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>6. Thực hiện nhiệm vụ khoa học và công nghệ đã nghiệm thu</div>
           {data.scienceProjects && data.scienceProjects.length > 0 ? (
@@ -356,17 +350,17 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>7. Kết quả nghiên cứu khoa học và công nghệ đã công bố</div>
           <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.1. Bài báo khoa học đã công bố</div>
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
-          {data.articlesBefore && data.articlesBefore.length > 0 ? (
+          {mergedArticlesBefore.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
-              <tbody>{data.articlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+              <tbody>{mergedArticlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có bài báo)</div>)}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
-          {data.articlesAfter && data.articlesAfter.length > 0 ? (
+          {mergedArticlesAfter.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
-              <tbody>{data.articlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+              <tbody>{mergedArticlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có bài báo)</div>)}
 

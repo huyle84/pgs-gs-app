@@ -139,19 +139,19 @@ function MainApp() {
   return (
     <div className="container">
       <header className="no-print" style={{ textAlign: 'center', marginBottom: '3rem', paddingTop: '2rem', position: 'relative' }}>
-        <div style={{ position: 'absolute', right: 0, top: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            Tài khoản: <strong>{currentUser.email}</strong>
-            <div style={{ fontSize: '0.75rem', color: saveStatus === 'saving' ? 'var(--primary)' : saveStatus === 'error' ? 'var(--danger)' : 'var(--success)' }}>
-              {saveStatus === 'saving' ? 'Đang đồng bộ...' : saveStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ lên Đám mây'}
+        <div style={{ position: 'absolute', right: 0, top: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', maxWidth: '280px', textAlign: 'right' }}>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px', display: 'block' }}>
+            <strong title={currentUser.email || ''}>{currentUser.email}</strong>
+            <div style={{ fontSize: '0.7rem', color: saveStatus === 'saving' ? 'var(--primary)' : saveStatus === 'error' ? 'var(--danger)' : 'var(--success)' }}>
+              {saveStatus === 'saving' ? '⟳ Đang đồng bộ...' : saveStatus === 'error' ? '✕ Lỗi' : '✓ Đã lưu'}
             </div>
           </span>
-          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }} onClick={logout}>
+          <button className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', whiteSpace: 'nowrap' }} onClick={logout}>
             Đăng xuất
           </button>
         </div>
         
-        <h1 style={{ color: 'var(--primary)', fontSize: '2.5rem', marginBottom: '0.5rem' }}>GS/PGS Point Estimator</h1>
+        <h1 style={{ color: 'var(--primary)', fontSize: '2.5rem', marginBottom: '0.5rem', paddingRight: '300px', paddingLeft: '300px' }}>GS/PGS Point Estimator</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
           Hệ thống ước tính điểm quy đổi chức danh Giáo sư, Phó Giáo sư theo QĐ 37/2018 và QĐ 25/2020
         </p>
@@ -216,7 +216,7 @@ function MainApp() {
                 data={candidateData} 
                 onChange={setCandidateData} 
                 onPreview={() => setShowPreview(true)}
-                onExportWord={() => generateDocx(candidateData, works, summary)} 
+                onExportWord={() => generateDocx(candidateData, works)} 
               />
             </div>
           )}
@@ -227,7 +227,7 @@ function MainApp() {
               works={works}
               summary={summary}
               onClose={() => setShowPreview(false)}
-              onExportWord={() => generateDocx(candidateData, works, summary)}
+              onExportWord={() => generateDocx(candidateData, works)}
             />
           )}
 

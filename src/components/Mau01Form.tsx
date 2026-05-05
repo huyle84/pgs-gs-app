@@ -114,8 +114,38 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
       <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Quá trình Công tác & Chuyên môn</h3>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
         <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-          <label className="form-label">Quá trình công tác</label>
-          <textarea name="workHistory" className="form-control" rows={4} value={data.workHistory || ''} onChange={handleChange} placeholder="Từ năm... đến năm... : làm gì ở đâu?" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <label className="form-label" style={{ margin: 0 }}>Quá trình công tác</label>
+            <button className="btn btn-primary" type="button" style={{ fontSize: '0.85rem', padding: '0.3rem 0.8rem' }} onClick={() => {
+              const recs = data.workHistoryRecords || [];
+              onChange({ ...data, workHistoryRecords: [...recs, { id: Date.now().toString(), fromYear: '', toYear: '', position: '', workplace: '' }] });
+            }}>+ Thêm quá trình công tác</button>
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <thead><tr>
+              <th style={formThStyle}>TT</th>
+              <th style={formThStyle}>Từ năm</th>
+              <th style={formThStyle}>Đến năm</th>
+              <th style={formThStyle}>Chức danh, chức vụ</th>
+              <th style={formThStyle}>Nơi công tác</th>
+              <th style={formThStyle}>Xóa</th>
+            </tr></thead>
+            <tbody>
+              {(data.workHistoryRecords || []).map((rec, idx) => (
+                <tr key={rec.id}>
+                  <td style={formTdStyle}>{idx + 1}</td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '60px' }} value={rec.fromYear} onChange={e => { const recs = [...(data.workHistoryRecords || [])]; recs[idx] = { ...recs[idx], fromYear: e.target.value }; onChange({ ...data, workHistoryRecords: recs }); }} placeholder="2015" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '60px' }} value={rec.toYear} onChange={e => { const recs = [...(data.workHistoryRecords || [])]; recs[idx] = { ...recs[idx], toYear: e.target.value }; onChange({ ...data, workHistoryRecords: recs }); }} placeholder="nay" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '140px' }} value={rec.position} onChange={e => { const recs = [...(data.workHistoryRecords || [])]; recs[idx] = { ...recs[idx], position: e.target.value }; onChange({ ...data, workHistoryRecords: recs }); }} placeholder="Giảng viên chính" /></td>
+                  <td style={formTdStyle}><input type="text" className="form-control" style={{ ...tableCellInput, minWidth: '160px' }} value={rec.workplace} onChange={e => { const recs = [...(data.workHistoryRecords || [])]; recs[idx] = { ...recs[idx], workplace: e.target.value }; onChange({ ...data, workHistoryRecords: recs }); }} placeholder="Trường ĐH..." /></td>
+                  <td style={formTdStyle}><button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => { const recs = (data.workHistoryRecords || []).filter((_, i) => i !== idx); onChange({ ...data, workHistoryRecords: recs }); }}>✕</button></td>
+                </tr>
+              ))}
+              {(!data.workHistoryRecords || data.workHistoryRecords.length === 0) && (
+                <tr><td colSpan={6} style={{ ...formTdStyle, textAlign: 'center', color: '#999' }}>Bấm "+ Thêm quá trình công tác" để nhập</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
         <div className="form-group">
@@ -201,7 +231,7 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
 
       {/* ========== SECTION B ========== */}
       <h3 style={{ borderBottom: '2px solid var(--primary)', paddingBottom: '0.5rem', marginBottom: '1.5rem', marginTop: '2rem' }}>B. TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH</h3>
-      
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
         <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="form-label">1. Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá)</label>
@@ -476,11 +506,11 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
               <tr>
                 <th style={formThStyle}>TT</th>
                 <th style={formThStyle}>Tên sách</th>
-                <th style={formThStyle}>Loại sách</th>
-                <th style={formThStyle}>NXB và năm XB</th>
+                <th style={formThStyle}>Loại sách (TK, GT, TK, HD)</th>
+                <th style={formThStyle}>Nhà xuất bản và năm xuất bản </th>
                 <th style={formThStyle}>Số tác giả</th>
-                <th style={formThStyle}>Viết MM hoặc CB, phản biện soạn</th>
-                <th style={formThStyle}>Xác nhận CS GDĐH</th>
+                <th style={formThStyle}>Viết MM hoặc CB, phần biên soạn</th>
+                <th style={formThStyle}>Xác nhận CS GDĐH (Số văn bản xác nhận sử dụng sách)</th>
                 <th style={formThStyle}>Xóa</th>
               </tr>
             </thead>
@@ -525,7 +555,7 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
               <th style={formThStyle}>CN/PCN/TK</th>
               <th style={formThStyle}>Mã số và cấp quản lý</th>
               <th style={formThStyle}>Thời gian thực hiện</th>
-              <th style={formThStyle}>Thời gian nghiệm thu</th>
+              <th style={formThStyle}>Thời gian nghiệm thu (ngày, tháng, năm) </th>
               <th style={formThStyle}>Xóa</th>
             </tr></thead>
             <tbody>
@@ -751,7 +781,7 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
       <p style={{ color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1rem' }}>
         Phần C (Cam đoan của người đăng ký) và Phần D (Xác nhận của Thủ trưởng cơ quan) sẽ được tự động in trong file Word xuất ra. Ứng viên chỉ cần ký tên sau khi in.
       </p>
-      
+
       <div style={{ marginTop: '2rem', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
         <button className="btn btn-outline" style={{ padding: '1rem 2rem', fontSize: '1.2rem' }} onClick={onPreview}>
           👁️ Xem trước tờ khai

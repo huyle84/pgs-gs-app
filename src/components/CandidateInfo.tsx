@@ -25,7 +25,8 @@ export interface CandidateData {
   isPartyMember?: boolean;
 
   // Academic & Work History
-  workHistory?: string;
+  workHistory?: string; // backward compat
+  workHistoryRecords?: WorkHistoryRecord[];
   currentPosition?: string;
   highestPastPosition?: string;
   currentWorkplace?: string;
@@ -98,6 +99,14 @@ export interface CandidateData {
 
   // Signing info
   signingLocation?: string;
+}
+
+export interface WorkHistoryRecord {
+  id: string;
+  fromYear: string;
+  toYear: string;
+  position: string;
+  workplace: string;
 }
 
 export interface TeachingRecord {
