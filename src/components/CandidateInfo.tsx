@@ -86,6 +86,9 @@ export interface CandidateData {
   patents?: PatentRecord[];
   awards?: AwardRecord[];
 
+  // 8. Program development
+  programDevelopment?: string;
+
   // Section 9: Missing standards replaced by international papers
   missingTimeRequirement?: boolean;
   missingTeachingHours?: boolean;

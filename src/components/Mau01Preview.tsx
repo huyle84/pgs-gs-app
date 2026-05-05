@@ -395,6 +395,10 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div>- Tổng điểm bài báo/sáng chế: <strong>{summary.articlePoints.toFixed(2)}</strong> điểm</div>
           <div>- Tổng điểm viết sách: <strong>{summary.bookPoints.toFixed(2)}</strong> điểm</div>
 
+          {/* 8. Program Development */}
+          <div style={{ ...rowStyle, marginTop: '1rem', fontWeight: 'bold' }}>8. Chủ trì hoặc tham gia xây dựng, phát triển chương trình đào tạo hoặc chương trình nghiên cứu, ứng dụng khoa học công nghệ của cơ sở giáo dục đại học</div>
+          <div style={{ ...rowStyle, whiteSpace: 'pre-wrap', marginLeft: '1rem' }}>{data.programDevelopment || '........'}</div>
+
           {/* Section 9: Missing standards */}
           <div style={{ marginTop: '2rem' }}>
             <div style={rowStyle}>9. Các tiêu chuẩn còn thiếu so với quy định cần được thay thế bằng bài báo khoa học quốc tế uy tín:</div>

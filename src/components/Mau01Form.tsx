@@ -714,6 +714,15 @@ export const Mau01Form: React.FC<Props> = ({ data, onChange, onExportWord, onPre
         </div>
       </div>
 
+      {/* ========== 8. Program Development ========== */}
+      <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>8. Chủ trì hoặc tham gia xây dựng, phát triển chương trình đào tạo</h3>
+      <div style={{ marginBottom: '2rem' }}>
+        <div className="form-group">
+          <label className="form-label">Chủ trì hoặc tham gia xây dựng, phát triển chương trình đào tạo hoặc chương trình nghiên cứu, ứng dụng khoa học công nghệ của cơ sở giáo dục đại học</label>
+          <textarea name="programDevelopment" className="form-control" rows={4} value={data.programDevelopment || ''} onChange={handleChange} placeholder="Liệt kê các chương trình đào tạo/nghiên cứu đã chủ trì hoặc tham gia xây dựng, phát triển..." />
+        </div>
+      </div>
+
       {/* Section 9: Các tiêu chuẩn còn thiếu */}
       <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>9. Các tiêu chuẩn còn thiếu cần thay thế bằng bài báo KHQT uy tín</h3>
       <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

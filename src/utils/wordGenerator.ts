@@ -257,6 +257,10 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[],
           ]}),
         ] : [new Paragraph({ children: [new TextRun({ text: "(Không có sách)", italics: true, font: "Times New Roman", size: 28 })] })]),
 
+        // 8. Program Development
+        new Paragraph({ children: [new TextRun({ text: "8. Chủ trì hoặc tham gia xây dựng, phát triển chương trình đào tạo hoặc chương trình nghiên cứu, ứng dụng khoa học công nghệ của cơ sở giáo dục đại học", bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: data.programDevelopment || "........", font: "Times New Roman", size: 28 })], spacing: { after: 200 } }),
+
         // 8. Tổng hợp công trình tính điểm (từ Tab 1)
         new Paragraph({ children: [new TextRun({ text: `8. Tổng hợp công trình khoa học (tính điểm)`, bold: true, font: "Times New Roman", size: 28 })], spacing: { before: 400 } }),
         new Paragraph({ children: [new TextRun({ text: `Giai đoạn 1: ${data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}`, italics: true, font: "Times New Roman", size: 28 })], spacing: { before: 200, after: 100 } }),
