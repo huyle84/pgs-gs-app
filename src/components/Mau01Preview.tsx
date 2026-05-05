@@ -258,9 +258,9 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
                   <th style={thStyle}>Họ tên NCS hoặc HV</th>
                   <th style={thStyle}>Đối tượng</th>
                   <th style={thStyle}>Trách nhiệm HD</th>
-                  <th style={thStyle}>Thời gian HD</th>
+                  <th style={thStyle}>Thời gian hướng dẫn từ....... đến......</th>
                   <th style={thStyle}>Cơ sở đào tạo</th>
-                  <th style={thStyle}>Năm cấp bằng</th>
+                  <th style={thStyle}>Năm được cấp bằng/có quyết định cấp bằng</th>
                 </tr>
               </thead>
               <tbody>
@@ -294,11 +294,11 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
                 <tr>
                   <th style={thStyle}>TT</th>
                   <th style={thStyle}>Tên sách</th>
-                  <th style={thStyle}>Loại sách</th>
-                  <th style={thStyle}>NXB và năm XB</th>
+                  <th style={thStyle}>Loại sách (CK, GT, TK, HD)</th>
+                  <th style={thStyle}>Nhà xuất bản và năm xuất bản</th>
                   <th style={thStyle}>Số tác giả</th>
-                  <th style={thStyle}>Viết MM hoặc CB</th>
-                  <th style={thStyle}>Xác nhận CS GDĐH</th>
+                  <th style={thStyle}>Viết MM hoặc CB, phần biên soạn</th>
+                  <th style={thStyle}>Xác nhận của CS GDĐH (Số văn bản xác nhận sử dụng sách)</th>
                 </tr>
               </thead>
               <tbody>
@@ -327,11 +327,11 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
                 <tr>
                   <th style={thStyle}>TT</th>
                   <th style={thStyle}>Tên sách</th>
-                  <th style={thStyle}>Loại sách</th>
-                  <th style={thStyle}>NXB và năm XB</th>
+                  <th style={thStyle}>Loại sách (CK, GT, TK, HD)</th>
+                  <th style={thStyle}>Nhà xuất bản và năm xuất bản</th>
                   <th style={thStyle}>Số tác giả</th>
-                  <th style={thStyle}>Viết MM hoặc CB</th>
-                  <th style={thStyle}>Xác nhận CS GDĐH</th>
+                  <th style={thStyle}>Viết MM hoặc CB, phần biên soạn</th>
+                  <th style={thStyle}>Xác nhận của CS GDĐH (Số văn bản xác nhận sử dụng sách)</th>
                 </tr>
               </thead>
               <tbody>
@@ -356,7 +356,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
           <div style={{ fontWeight: 'bold', marginTop: '2rem', marginBottom: '0.5rem' }}>6. Thực hiện nhiệm vụ khoa học và công nghệ đã nghiệm thu</div>
           {data.scienceProjects && data.scienceProjects.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
-              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên nhiệm vụ KHCN</th><th style={thStyle}>CN/PCN/TK</th><th style={thStyle}>Mã số và cấp QL</th><th style={thStyle}>Thời gian TH</th><th style={thStyle}>Thời gian NT</th></tr></thead>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên nhiệm vụ khoa học và công nghệ (CT, ĐT, ...)</th><th style={thStyle}>CN/PCN/TK</th><th style={thStyle}>Mã số và cấp quản lý</th><th style={thStyle}>Thời gian thực hiện</th><th style={thStyle}>Thời gian nghiệm thu (ngày, tháng, năm)</th></tr></thead>
               <tbody>{data.scienceProjects.map((rec, idx) => (<tr key={rec.id}><td style={tdStyle}>{idx + 1}</td><td style={tdStyle}>{rec.name}</td><td style={tdStyle}>{rec.role}</td><td style={tdStyle}>{rec.codeAndLevel}</td><td style={tdStyle}>{rec.implementPeriod}</td><td style={tdStyle}>{rec.acceptanceDate}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Chưa có thông tin)</div>)}
@@ -367,14 +367,14 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 1: {data.targetLevel === 'PGS' ? 'Trước khi bảo vệ TS' : 'Trước khi được công nhận PGS'}</div>
           {mergedArticlesBefore.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
-              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số tác giả</th><th style={thStyle}>Tên tạp chí hoặc kỷ yếu khoa học</th><th style={thStyle}>Tạp chí quốc tế uy tín (và IF)</th><th style={thStyle}>Số trích dẫn của bài báo</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm công bố</th></tr></thead>
               <tbody>{mergedArticlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có bài báo)</div>)}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
           {mergedArticlesAfter.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
-              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số tác giả</th><th style={thStyle}>Tên tạp chí hoặc kỷ yếu khoa học</th><th style={thStyle}>Tạp chí quốc tế uy tín (và IF)</th><th style={thStyle}>Số trích dẫn của bài báo</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm công bố</th></tr></thead>
               <tbody>{mergedArticlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có bài báo)</div>)}
@@ -383,7 +383,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
           <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.2. Bằng độc quyền sáng chế, giải pháp hữu ích</div>
           {mergedPatents && mergedPatents.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '11pt' }}>
-              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bằng ĐQ sáng chế, GPHỮ</th><th style={thStyle}>Cơ quan cấp</th><th style={thStyle}>Ngày cấp</th><th style={thStyle}>Số TG</th></tr></thead>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bằng độc quyền sáng chế, giải pháp hữu ích</th><th style={thStyle}>Tên cơ quan cấp</th><th style={thStyle}>Ngày tháng năm cấp</th><th style={thStyle}>Số tác giả</th></tr></thead>
               <tbody>{mergedPatents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có)</div>)}
@@ -392,7 +392,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, onClose, onExportWo
           <div style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '0.5rem' }}>7.3. Giải thưởng quốc gia, quốc tế</div>
           {mergedAwards && mergedAwards.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
-              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên giải thưởng</th><th style={thStyle}>Cơ quan/TC ra QĐ</th><th style={thStyle}>Số QĐ, ngày</th><th style={thStyle}>Số TG</th></tr></thead>
+              <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên giải thưởng</th><th style={thStyle}>Cơ quan/tổ chức ra quyết định</th><th style={thStyle}>Số quyết định và ngày, tháng, năm</th><th style={thStyle}>Số tác giả</th></tr></thead>
               <tbody>{mergedAwards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có)</div>)}

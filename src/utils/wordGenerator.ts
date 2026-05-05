@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType } from 'docx';
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, VerticalAlign } from 'docx';
 import { saveAs } from 'file-saver';
 import type { CandidateData } from '../components/CandidateInfo';
 import type { ScientificWork } from './calculator';
@@ -39,46 +39,46 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
   const bookTypesMap: Record<string, string> = { specializedBook: 'CK', textBook: 'GT', referenceBook: 'TK', guideBook: 'HD' };
   const bookTypesList = ['specializedBook', 'textBook', 'referenceBook', 'guideBook'];
   const articleTypesList = ['articleISI', 'articleISSNOnline', 'articleISSNOffline', 'nationalConference', 'internationalConference'];
-  
+
   const mergedBooksBefore = [
     ...works.filter(w => bookTypesList.includes(w.type) && w.stage === 'BEFORE').map(w => ({
-      id: 't1_'+w.id, title: w.title, bookType: bookTypesMap[w.type]||'', publisher: w.journalName||'',
-      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor?'CB':'', confirmation: '',
+      id: 't1_' + w.id, title: w.title, bookType: bookTypesMap[w.type] || '', publisher: w.journalName || '',
+      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor ? 'CB' : '', confirmation: '',
     })),
     ...(data.booksBefore || []),
   ];
   const mergedBooksAfter = [
     ...works.filter(w => bookTypesList.includes(w.type) && w.stage === 'AFTER').map(w => ({
-      id: 't1_'+w.id, title: w.title, bookType: bookTypesMap[w.type]||'', publisher: w.journalName||'',
-      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor?'CB':'', confirmation: '',
+      id: 't1_' + w.id, title: w.title, bookType: bookTypesMap[w.type] || '', publisher: w.journalName || '',
+      totalAuthors: w.totalAuthors.toString(), writingRole: w.isMainAuthor ? 'CB' : '', confirmation: '',
     })),
     ...(data.booksAfter || []),
   ];
   const mergedArticlesBefore = [
     ...works.filter(w => articleTypesList.includes(w.type) && w.stage === 'BEFORE').map(w => ({
-      id: 't1_'+w.id, title: w.title, totalAuthors: w.totalAuthors.toString(),
-      journalName: w.journalName||'', intlJournal: w.impactFactor?'IF='+w.impactFactor:'',
-      citations: w.citations||'', volumeIssue: w.volume||'', pages: w.pages||'', publishYear: w.publishYear||'',
+      id: 't1_' + w.id, title: w.title, totalAuthors: w.totalAuthors.toString(),
+      journalName: w.journalName || '', intlJournal: w.impactFactor ? 'IF=' + w.impactFactor : '',
+      citations: w.citations || '', volumeIssue: w.volume || '', pages: w.pages || '', publishYear: w.publishYear || '',
     })),
     ...(data.articlesBefore || []),
   ];
   const mergedArticlesAfter = [
     ...works.filter(w => articleTypesList.includes(w.type) && w.stage === 'AFTER').map(w => ({
-      id: 't1_'+w.id, title: w.title, totalAuthors: w.totalAuthors.toString(),
-      journalName: w.journalName||'', intlJournal: w.impactFactor?'IF='+w.impactFactor:'',
-      citations: w.citations||'', volumeIssue: w.volume||'', pages: w.pages||'', publishYear: w.publishYear||'',
+      id: 't1_' + w.id, title: w.title, totalAuthors: w.totalAuthors.toString(),
+      journalName: w.journalName || '', intlJournal: w.impactFactor ? 'IF=' + w.impactFactor : '',
+      citations: w.citations || '', volumeIssue: w.volume || '', pages: w.pages || '', publishYear: w.publishYear || '',
     })),
     ...(data.articlesAfter || []),
   ];
   const mergedPatents = [
     ...works.filter(w => ['patent', 'usefulSolution'].includes(w.type)).map(w => ({
-      id: 't1_'+w.id, name: w.title, issuingOrg: w.journalName||'', issueDate: w.publishYear||'', totalAuthors: w.totalAuthors.toString(),
+      id: 't1_' + w.id, name: w.title, issuingOrg: w.journalName || '', issueDate: w.publishYear || '', totalAuthors: w.totalAuthors.toString(),
     })),
     ...(data.patents || []),
   ];
   const mergedAwards = [
     ...works.filter(w => ['nationalArtAward', 'internationalArtAward'].includes(w.type)).map(w => ({
-      id: 't1_'+w.id, name: w.title, organization: w.journalName||'', decisionInfo: w.publishYear||'', totalAuthors: w.totalAuthors.toString(),
+      id: 't1_' + w.id, name: w.title, organization: w.journalName || '', decisionInfo: w.publishYear || '', totalAuthors: w.totalAuthors.toString(),
     })),
     ...(data.awards || []),
   ];
@@ -121,20 +121,64 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
           spacing: { after: 400 }
         }),
 
-        // TITLE
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: "BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN", bold: true, font: "Times New Roman", size: 30 })],
+        // TITLE & PHOTO
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          borders: {
+            top: { style: BorderStyle.NONE },
+            bottom: { style: BorderStyle.NONE },
+            left: { style: BorderStyle.NONE },
+            right: { style: BorderStyle.NONE },
+            insideHorizontal: { style: BorderStyle.NONE },
+            insideVertical: { style: BorderStyle.NONE },
+          },
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: { size: 75, type: WidthType.PERCENTAGE },
+                  children: [
+                    new Paragraph({
+                      alignment: AlignmentType.CENTER,
+                      children: [new TextRun({ text: "BẢN ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN", bold: true, font: "Times New Roman", size: 30 })],
+                    }),
+                    new Paragraph({
+                      alignment: AlignmentType.CENTER,
+                      children: [new TextRun({ text: `CHỨC DANH: ${data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}`, bold: true, font: "Times New Roman", size: 30 })],
+                    }),
+                    new Paragraph({
+                      alignment: AlignmentType.CENTER,
+                      children: [new TextRun({ text: `Mã hồ sơ: ${data.applicationCode || '........................'}`, font: "Times New Roman", size: 28 })],
+                    }),
+                  ],
+                }),
+                new TableCell({
+                  width: { size: 25, type: WidthType.PERCENTAGE },
+                  children: [
+                    new Paragraph({
+                      alignment: AlignmentType.CENTER,
+                      children: [
+                        new TextRun({ text: "Ảnh mẫu", font: "Times New Roman", size: 20 }),
+                        new TextRun({ text: "\n4 x 6", font: "Times New Roman", size: 20 }),
+                      ],
+                    }),
+                  ],
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, size: 1 },
+                    bottom: { style: BorderStyle.SINGLE, size: 1 },
+                    left: { style: BorderStyle.SINGLE, size: 1 },
+                    right: { style: BorderStyle.SINGLE, size: 1 },
+                  },
+                  verticalAlign: VerticalAlign.CENTER,
+                }),
+              ],
+            }),
+          ],
         }),
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: `CHỨC DANH: ${data.targetLevel === 'GS' ? 'GIÁO SƯ' : 'PHÓ GIÁO SƯ'}`, bold: true, font: "Times New Roman", size: 30 })],
-        }),
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: `Mã hồ sơ: ${data.applicationCode || '........................'}`, font: "Times New Roman", size: 28 })],
-          spacing: { after: 400 }
-        }),
+        new Paragraph({ text: "", spacing: { after: 400 } }),
+
+
+
 
         // A. THÔNG TIN CÁ NHÂN
         new Paragraph({ children: [new TextRun({ text: "(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)", italics: true, font: "Times New Roman", size: 24 })], spacing: { after: 200 } }),
@@ -155,10 +199,12 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         new Paragraph({ children: [new TextRun({ text: `Điện thoại nhà riêng: ${data.phoneHome || '.......................'}; Điện thoại di động: ${data.phoneMobile || '.......................'}; Email: ${data.email || '.......................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `7. Quá trình công tác (công việc, chức vụ, cơ quan):`, font: "Times New Roman", size: 28 })] }),
         ...(data.workHistoryRecords && data.workHistoryRecords.length > 0 ? [
-          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-            new TableRow({ children: [createCell("Từ năm", true), createCell("Đến năm", true), createCell("Chức danh, chức vụ", true), createCell("Nơi công tác", true)] }),
-            ...data.workHistoryRecords.map((r) => new TableRow({ children: [createCell(r.fromYear), createCell(r.toYear), createTextCell(r.position), createTextCell(r.workplace)] })),
-          ]}),
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+              new TableRow({ children: [createCell("Từ năm", true), createCell("Đến năm", true), createCell("Chức danh, chức vụ", true), createCell("Nơi công tác", true)] }),
+              ...data.workHistoryRecords.map((r) => new TableRow({ children: [createCell(r.fromYear), createCell(r.toYear), createTextCell(r.position), createTextCell(r.workplace)] })),
+            ]
+          }),
         ] : [new Paragraph({ children: [new TextRun({ text: data.workHistory || '........', font: "Times New Roman", size: 28 })] })]),
         new Paragraph({ children: [new TextRun({ text: `Chức vụ: Hiện nay: ${data.currentPosition || '.......................................'}; Chức vụ cao nhất đã qua: ${data.highestPastPosition || '.......................................'}`, font: "Times New Roman", size: 28 })] }),
         new Paragraph({ children: [new TextRun({ text: `Cơ quan công tác hiện nay: ${data.currentWorkplace || '......................................................'}`, font: "Times New Roman", size: 28 })] }),
@@ -283,7 +329,9 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         ...(data.scienceProjects && data.scienceProjects.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-              new TableRow({ children: [createCell("TT", true), createCell("Tên nhiệm vụ KHCN", true), createCell("CN/PCN/TK", true), createCell("Mã số, cấp QL", true), createCell("TG thực hiện", true), createCell("TG nghiệm thu", true)] }),
+              new TableRow({
+                children: [createCell("TT", true), createCell("Tên nhiệm vụ khoa học và công nghệ (CT, ĐT, ...)", true), createCell("CN / PCN / TK", true), createCell("Mã số, cấp quản lý", true), createCell("Thời gian thực hiện", true), createCell("Thời gian nghiệm thu (ngày, tháng, năm)", true)]
+              }),
               ...data.scienceProjects.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createCell(r.role), createTextCell(r.codeAndLevel), createCell(r.implementPeriod), createCell(r.acceptanceDate)] })),
             ]
           }),
@@ -298,7 +346,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         ...(mergedArticlesBefore.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-              new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số TG", true), createCell("TC/Kỷ yếu", true), createCell("TC QT (IF)", true), createCell("Trích dẫn", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm", true)] }),
+              new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số tác giả", true), createCell("Tên tạp chí hoặc kỷ yếu khoa học", true), createCell("Tạp chí quốc tế uy tín (và IF)", true), createCell("Số trích dẫn của bài báo", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm công bố", true)] }),
               ...mergedArticlesBefore.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.title), createCell(r.totalAuthors), createTextCell(r.journalName), createCell(r.intlJournal), createCell(r.citations), createCell(r.volumeIssue), createCell(r.pages), createCell(r.publishYear)] })),
             ]
           }),
@@ -307,7 +355,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         ...(mergedArticlesAfter.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-              new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số TG", true), createCell("TC/Kỷ yếu", true), createCell("TC QT (IF)", true), createCell("Trích dẫn", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm", true)] }),
+              new TableRow({ children: [createCell("TT", true), createCell("Tên bài báo", true), createCell("Số tác giả", true), createCell("Tên tạp chí hoặc kỷ yếu khoa học", true), createCell("Tạp chí quốc tế uy tín (và IF)", true), createCell("Số trích dẫn của bài báo", true), createCell("Tập/số", true), createCell("Trang", true), createCell("Năm công bố", true)] }),
               ...mergedArticlesAfter.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.title), createCell(r.totalAuthors), createTextCell(r.journalName), createCell(r.intlJournal), createCell(r.citations), createCell(r.volumeIssue), createCell(r.pages), createCell(r.publishYear)] })),
             ]
           }),
@@ -318,7 +366,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         ...(mergedPatents.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-              new TableRow({ children: [createCell("TT", true), createCell("Tên bằng ĐQSC/GPHỮ", true), createCell("Cơ quan cấp", true), createCell("Ngày cấp", true), createCell("Số TG", true)] }),
+              new TableRow({ children: [createCell("TT", true), createCell("Tên bằng độc quyền sáng chế, giải pháp hữu ích", true), createCell("Tên cơ quan cấp", true), createCell("Ngày tháng năm cấp", true), createCell("Số tác giả", true)] }),
               ...mergedPatents.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.issuingOrg), createCell(r.issueDate), createCell(r.totalAuthors)] })),
             ]
           }),
@@ -329,7 +377,7 @@ export const generateDocx = async (data: CandidateData, works: ScientificWork[])
         ...(mergedAwards.length > 0 ? [
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
-              new TableRow({ children: [createCell("TT", true), createCell("Tên giải thưởng", true), createCell("CQ/TC ra QĐ", true), createCell("Số QĐ, ngày", true), createCell("Số TG", true)] }),
+              new TableRow({ children: [createCell("TT", true), createCell("Tên giải thưởng", true), createCell("Cơ quan/tổ chức ra quyết định", true), createCell("Số quyết định và ngày, tháng, năm", true), createCell("Số tác giả", true)] }),
               ...mergedAwards.map((r, i) => new TableRow({ children: [createCell((i + 1).toString()), createTextCell(r.name), createTextCell(r.organization), createTextCell(r.decisionInfo), createCell(r.totalAuthors)] })),
             ]
           }),
