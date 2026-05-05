@@ -62,7 +62,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
             <button className="btn btn-primary" onClick={onExportWord}>📥 Tải xuống File Word</button>
           </div>
         </div>
-        
+
         <div style={documentStyle}>
           {/* Mẫu số 01 label */}
           <div style={{ textAlign: 'right', marginBottom: '1rem', fontWeight: 'bold', fontSize: '13pt' }}>Mẫu số 01</div>
@@ -87,18 +87,18 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
               <div style={{ marginTop: '0.5rem' }}>Mã hồ sơ: {data.applicationCode || '........................'}</div>
             </div>
             <div style={{ width: '100px', height: '130px', border: '1px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '10pt', textAlign: 'center', color: '#666' }}>
-              Ảnh mẫu<br/>4 x 6
+              Ảnh mẫu<br />4 x 6
             </div>
           </div>
 
           {/* Checkbox instructions */}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>(Nội dung đúng ở ô nào thì đánh dấu vào ô đó: ☑; Nội dung không đúng thì để trống: ☐)</div>
           <div style={{ marginBottom: '0.5rem' }}>
-            Đối tượng đăng ký: Giảng viên {data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'}; 
+            Đối tượng đăng ký: Giảng viên {data.registrationType === 'Giảng viên' || !data.registrationType ? '☑' : '☐'};
             Giảng viên thỉnh giảng {data.registrationType === 'Giảng viên thỉnh giảng' ? '☑' : '☐'}
           </div>
           <div style={{ marginBottom: '1.5rem' }}>
-            Ngành: {data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'}; 
+            Ngành: {data.field === 'NATURAL_SCIENCES' ? 'Khoa học Tự nhiên' : 'Khoa học Xã hội'};
             Chuyên ngành: {data.specialty || '.............................................'}
           </div>
 
@@ -106,13 +106,13 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={{ fontWeight: 'bold', fontSize: '14pt', marginBottom: '1rem' }}>A. THÔNG TIN CÁ NHÂN</div>
           <div style={rowStyle}>1. Họ và tên người đăng ký: <strong>{data.fullName || '.........................................................'}</strong></div>
           <div style={rowStyle}>
-            2. Ngày tháng năm sinh: {data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'}; 
-            Nam {data.gender?.toLowerCase() === 'nam' ? '☑' : '☐'} 
-            Nữ {data.gender?.toLowerCase() === 'nữ' ? '☑' : '☐'}; 
+            2. Ngày tháng năm sinh: {data.birthDate ? data.birthDate.split('-').reverse().join('/') : '...........................'};
+            Nam {data.gender?.toLowerCase() === 'nam' ? '☑' : '☐'}
+            Nữ {data.gender?.toLowerCase() === 'nữ' ? '☑' : '☐'};
             Quốc tịch: Việt Nam
           </div>
           <div style={rowStyle}>
-            Dân tộc: {data.nation || '.............................................'}; 
+            Dân tộc: {data.nation || '.............................................'};
             Tôn giáo: {data.religion || '..................................................'}
           </div>
           <div style={rowStyle}>3. Đảng viên Đảng Cộng sản Việt Nam: {data.isPartyMember ? '☑' : '☐'}</div>
@@ -120,11 +120,11 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={rowStyle}>5. Nơi đăng ký hộ khẩu thường trú: {data.permanentAddress || '...................................................................................'}</div>
           <div style={rowStyle}>6. Địa chỉ liên hệ: {data.contactAddress || '.......................................................................................................'}</div>
           <div style={rowStyle}>
-            Điện thoại nhà riêng: {data.phoneHome || '...........................'}; 
-            Điện thoại di động: {data.phoneMobile || '...........................'}; 
+            Điện thoại nhà riêng: {data.phoneHome || '...........................'};
+            Điện thoại di động: {data.phoneMobile || '...........................'};
             E-mail: {data.email || '...........................'}
           </div>
-          
+
           <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>7. Quá trình công tác:</div>
           {data.workHistoryRecords && data.workHistoryRecords.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.5rem', fontSize: '11pt' }}>
@@ -134,7 +134,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           ) : (
             <div style={{ ...rowStyle, whiteSpace: 'pre-wrap' }}>{data.workHistory || 'Từ năm........ đến năm........: ..................................................................................'}</div>
           )}
-          
+
           <div style={rowStyle}>Chức vụ: Hiện nay: {data.currentPosition || '...........................'}; Chức vụ cao nhất đã qua: {data.highestPastPosition || '...........................'}</div>
           <div style={rowStyle}>Cơ quan công tác hiện nay: {data.currentWorkplace || '.......................................................................'}</div>
           <div style={rowStyle}>Địa chỉ cơ quan: {data.workplaceAddress || '.......................................................................'}</div>
@@ -143,29 +143,29 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           <div style={rowStyle}>8. Đã nghỉ hưu từ tháng {data.retiredDate || '........ năm ........'}</div>
           <div style={rowStyle}>Nơi làm việc sau khi nghỉ hưu (nếu có): {data.postRetirementWorkplace || '.......................................................................'}</div>
           <div style={rowStyle}>Tên cơ sở giáo dục đại học nơi hợp đồng thỉnh giảng 3 năm cuối: {data.recentVisitingSchool || '........................................................'}</div>
-          
+
           <div style={{ marginTop: '1rem', lineHeight: '1.5' }}>
-            9. Học vị:<br/>
-            - Bằng ĐH: {data.bachelorInfo || '.......................................................................'}<br/>
-            - Bằng ThS: {data.masterInfo || '.......................................................................'}<br/>
+            9. Học vị:<br />
+            - Bằng ĐH: {data.bachelorInfo || '.......................................................................'}<br />
+            - Bằng ThS: {data.masterInfo || '.......................................................................'}<br />
             - Bằng TS: {data.doctorInfo || '.......................................................................'}
           </div>
 
           <div style={rowStyle}>10. Ngoại ngữ: {data.foreignLanguage || '.......................................................................'}</div>
           <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-            11. Các hướng nghiên cứu chủ yếu:<br/>
+            11. Các hướng nghiên cứu chủ yếu:<br />
             {data.researchDirections || '.......................................................................................................\n.......................................................................................................'}
           </div>
 
           {/* Section B: TỰ KHAI THEO TIÊU CHUẨN */}
           <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>B. TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH GIÁO SƯ/PHÓ GIÁO SƯ</div>
-          
-          <div style={rowStyle}>1. Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá).</div>
+
+          <div style={{ ...rowStyle, fontWeight: 'bold' }}>1. Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá).</div>
           <div style={{ ...rowStyle, whiteSpace: 'pre-wrap', marginLeft: '1rem' }}>{data.selfAssessment || '.......................................................................................................'}</div>
 
-          <div style={{ ...rowStyle, marginTop: '1rem' }}>2. Thời gian tham gia đào tạo, bồi dưỡng từ trình độ đại học trở lên:</div>
+          <div style={{ ...rowStyle, marginTop: '1rem', fontWeight: 'bold' }}>2. Thời gian tham gia đào tạo, bồi dưỡng từ trình độ đại học trở lên:</div>
           <div style={rowStyle}>Tổng số: {data.teachingYearsTotal || '...............'} năm.</div>
-          
+
           {/* Teaching Records Table */}
           {data.teachingRecords && data.teachingRecords.length > 0 && (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', marginTop: '0.5rem', fontSize: '11pt' }}>
@@ -205,9 +205,9 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           )}
 
           {/* 3. Foreign Language */}
-          <div style={{ ...rowStyle, marginTop: '1rem' }}>3. Ngoại ngữ:</div>
+          <div style={{ ...rowStyle, marginTop: '1rem', fontWeight: 'bold' }}>3. Ngoại ngữ:</div>
           <div style={rowStyle}>3.1. Ngoại ngữ thành thạo phục vụ chuyên môn: {data.foreignLanguage || '.......................................................................'}</div>
-          
+
           <div style={{ marginLeft: '1rem' }}>
             <div style={rowStyle}>a) Được đào tạo ở nước ngoài: {data.flTrainedAbroad ? '☑' : '☐'}</div>
             {data.flTrainedAbroad && (
@@ -342,7 +342,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           {data.scienceProjects && data.scienceProjects.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên nhiệm vụ KHCN</th><th style={thStyle}>CN/PCN/TK</th><th style={thStyle}>Mã số và cấp QL</th><th style={thStyle}>Thời gian TH</th><th style={thStyle}>Thời gian NT</th></tr></thead>
-              <tbody>{data.scienceProjects.map((rec, idx) => (<tr key={rec.id}><td style={tdStyle}>{idx+1}</td><td style={tdStyle}>{rec.name}</td><td style={tdStyle}>{rec.role}</td><td style={tdStyle}>{rec.codeAndLevel}</td><td style={tdStyle}>{rec.implementPeriod}</td><td style={tdStyle}>{rec.acceptanceDate}</td></tr>))}</tbody>
+              <tbody>{data.scienceProjects.map((rec, idx) => (<tr key={rec.id}><td style={tdStyle}>{idx + 1}</td><td style={tdStyle}>{rec.name}</td><td style={tdStyle}>{rec.role}</td><td style={tdStyle}>{rec.codeAndLevel}</td><td style={tdStyle}>{rec.implementPeriod}</td><td style={tdStyle}>{rec.acceptanceDate}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Chưa có thông tin)</div>)}
 
@@ -353,14 +353,14 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           {mergedArticlesBefore.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
-              <tbody>{mergedArticlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+              <tbody>{mergedArticlesBefore.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có bài báo)</div>)}
           <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Giai đoạn 2: {data.targetLevel === 'PGS' ? 'Sau khi bảo vệ TS' : 'Sau khi được công nhận PGS'}</div>
           {mergedArticlesAfter.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '10pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bài báo</th><th style={thStyle}>Số TG</th><th style={thStyle}>Tạp chí/Kỷ yếu</th><th style={thStyle}>TC QT (IF)</th><th style={thStyle}>Trích dẫn</th><th style={thStyle}>Tập/số</th><th style={thStyle}>Trang</th><th style={thStyle}>Năm</th></tr></thead>
-              <tbody>{mergedArticlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
+              <tbody>{mergedArticlesAfter.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.title}</td><td style={tdStyle}>{r.totalAuthors}</td><td style={tdStyle}>{r.journalName}</td><td style={tdStyle}>{r.intlJournal}</td><td style={tdStyle}>{r.citations}</td><td style={tdStyle}>{r.volumeIssue}</td><td style={tdStyle}>{r.pages}</td><td style={tdStyle}>{r.publishYear}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có bài báo)</div>)}
 
@@ -369,7 +369,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           {data.patents && data.patents.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '11pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên bằng ĐQ sáng chế, GPHỮ</th><th style={thStyle}>Cơ quan cấp</th><th style={thStyle}>Ngày cấp</th><th style={thStyle}>Số TG</th></tr></thead>
-              <tbody>{data.patents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+              <tbody>{data.patents.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.issuingOrg}</td><td style={tdStyle}>{r.issueDate}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem' }}>(Không có)</div>)}
 
@@ -378,16 +378,16 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           {data.awards && data.awards.length > 0 ? (
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem', fontSize: '11pt' }}>
               <thead><tr><th style={thStyle}>TT</th><th style={thStyle}>Tên giải thưởng</th><th style={thStyle}>Cơ quan/TC ra QĐ</th><th style={thStyle}>Số QĐ, ngày</th><th style={thStyle}>Số TG</th></tr></thead>
-              <tbody>{data.awards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i+1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
+              <tbody>{data.awards.map((r, i) => (<tr key={r.id}><td style={tdStyle}>{i + 1}</td><td style={tdStyle}>{r.name}</td><td style={tdStyle}>{r.organization}</td><td style={tdStyle}>{r.decisionInfo}</td><td style={tdStyle}>{r.totalAuthors}</td></tr>))}</tbody>
             </table>
           ) : (<div style={{ ...rowStyle, fontStyle: 'italic', marginLeft: '1rem', marginBottom: '1rem' }}>(Không có)</div>)}
 
           {/* Score Summary */}
-          <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>TỔNG HỢP ĐIỂM QUY ĐỔI</div>
-          <div>- Tổng điểm quy đổi công trình khoa học: <strong>{summary.totalPoints.toFixed(2)}</strong> điểm</div>
-          <div>- Tổng điểm 3 năm cuối: <strong>{summary.recentPoints.toFixed(2)}</strong> điểm</div>
-          <div>- Tổng điểm bài báo/sáng chế: <strong>{summary.articlePoints.toFixed(2)}</strong> điểm</div>
-          <div>- Tổng điểm viết sách: <strong>{summary.bookPoints.toFixed(2)}</strong> điểm</div>
+          {/* <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>TỔNG HỢP ĐIỂM QUY ĐỔI</div> */}
+          {/* <div>- Tổng điểm quy đổi công trình khoa học: <strong>{summary.totalPoints.toFixed(2)}</strong> điểm</div> */}
+          {/* <div>- Tổng điểm 3 năm cuối: <strong>{summary.recentPoints.toFixed(2)}</strong> điểm</div> */}
+          {/* <div>- Tổng điểm bài báo/sáng chế: <strong>{summary.articlePoints.toFixed(2)}</strong> điểm</div> */}
+          {/* <div>- Tổng điểm viết sách: <strong>{summary.bookPoints.toFixed(2)}</strong> điểm</div> */}
 
           {/* 8. Program Development */}
           <div style={{ ...rowStyle, marginTop: '1rem', fontWeight: 'bold' }}>8. Chủ trì hoặc tham gia xây dựng, phát triển chương trình đào tạo hoặc chương trình nghiên cứu, ứng dụng khoa học công nghệ của cơ sở giáo dục đại học</div>
@@ -395,7 +395,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
 
           {/* Section 9: Missing standards */}
           <div style={{ marginTop: '2rem' }}>
-            <div style={rowStyle}>9. Các tiêu chuẩn còn thiếu so với quy định cần được thay thế bằng bài báo khoa học quốc tế uy tín:</div>
+            <div style={{ ...rowStyle, fontWeight: 'bold' }}>9. Các tiêu chuẩn còn thiếu so với quy định cần được thay thế bằng bài báo khoa học quốc tế uy tín:</div>
             <div style={{ marginLeft: '1rem' }}>
               <div style={rowStyle}>- Thời gian được cấp bằng TS, được bổ nhiệm PGS: {data.missingTimeRequirement ? '☑' : '☐'}</div>
               <div style={rowStyle}>- Giờ chuẩn giảng dạy: {data.missingTeachingHours ? '☑' : '☐'}</div>
@@ -408,10 +408,10 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           {/* Section C: Cam đoan */}
           <div style={{ fontWeight: 'bold', fontSize: '14pt', margin: '2rem 0 1rem' }}>C. CAM ĐOAN CỦA NGƯỜI ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN CHỨC DANH:</div>
           <div style={{ marginBottom: '1rem', textIndent: '2rem' }}>Tôi cam đoan những điều khai trên là đúng, nếu sai tôi xin chịu trách nhiệm trước pháp luật.</div>
-          
+
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
             <div style={{ textAlign: 'center', width: '300px' }}>
-              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>......{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
+              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
               <div style={{ fontWeight: 'bold' }}>Người đăng ký</div>
               <div style={{ fontStyle: 'italic' }}>(Ký và ghi rõ họ tên)</div>
               <div style={{ marginTop: '4rem', fontWeight: 'bold' }}>{data.fullName}</div>
@@ -426,7 +426,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
             <div style={{ textAlign: 'center', width: '350px' }}>
-              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>......{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
+              <div style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>{data.signingLocation ? data.signingLocation : '.'}, ngày ..... tháng ..... năm ........</div>
               <div style={{ fontWeight: 'bold' }}>THỦ TRƯỞNG CƠ QUAN</div>
               <div style={{ fontStyle: 'italic' }}>(Ký và ghi rõ họ tên, đóng dấu)</div>
               <div style={{ marginTop: '4rem' }}>&nbsp;</div>
@@ -442,7 +442,7 @@ export const Mau01Preview: React.FC<Props> = ({ data, works, summary, onClose, o
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
